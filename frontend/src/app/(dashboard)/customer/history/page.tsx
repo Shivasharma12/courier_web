@@ -2,7 +2,7 @@
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '@/lib/api-client';
-import { Package, Truck, CheckCircle, Clock, Check } from 'lucide-react';
+import { Package, Truck, CheckCircle, Clock, Check, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 
