@@ -29,15 +29,24 @@ import { CommonModule } from './common/common.module';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: 'postgres',
-      password: 'Shiva@123',
-      database: 'courier_db',
-      entities: [User, Hub, Parcel, Delivery, TrackingLog, TransportMode, RouteSegment, TravelPlan],
-      synchronize: true, // Set to false in production
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => {
+        const url = config.get<string>('DATABASE_URL');
+        return {
+          type: 'postgres',
+          url: url,
+          host: url ? undefined : config.get<string>('DB_HOST', 'localhost'),
+          port: url ? undefined : config.get<number>('DB_PORT', 5432),
+          username: url ? undefined : config.get<string>('DB_USERNAME', 'postgres'),
+          password: url ? undefined : config.get<string>('DB_PASSWORD', 'Shiva@123'),
+          database: url ? undefined : config.get<string>('DB_DATABASE', 'courier_db'),
+          entities: [User, Hub, Parcel, Delivery, TrackingLog, TransportMode, RouteSegment, TravelPlan],
+          synchronize: true, // Set to false in production
+          ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+        };
+      },
     }),
     AuthModule,
     UsersModule,
