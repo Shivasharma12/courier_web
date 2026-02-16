@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, MoreThan } from 'typeorm';
 import { TravelPlan } from './entities/travel-plan.entity';
 import { TravelPlanStatus } from '../common/enums/travel-plan-status.enum';
 import { TravelMatchingService } from './travel-matching.service';
@@ -53,16 +53,25 @@ export class TravelPlansService {
     }
 
     async findByUser(userId: string) {
+        const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
         return this.travelPlanRepository.find({
-            where: { user: { id: userId } },
-            order: { travelDate: 'ASC' }
+            where: {
+                user: { id: userId },
+                createdAt: MoreThan(twentyFourHoursAgo)
+            },
+            order: { createdAt: 'DESC' }
         });
     }
 
     async findActive() {
+        const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
         return this.travelPlanRepository.find({
-            where: { status: TravelPlanStatus.ACTIVE_TRAVEL },
-            relations: ['user']
+            where: {
+                status: TravelPlanStatus.ACTIVE_TRAVEL,
+                createdAt: MoreThan(twentyFourHoursAgo)
+            },
+            relations: ['user'],
+            order: { createdAt: 'DESC' }
         });
     }
 

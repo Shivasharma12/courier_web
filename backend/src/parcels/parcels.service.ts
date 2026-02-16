@@ -28,7 +28,7 @@ export class ParcelsService {
         // Simple pricing logic: weight * 10
         const price = (parcelData.weight || 1) * 10;
 
-        const { destinationHubId, ...rest } = parcelData;
+        const { destinationHubId, currentHubId, ...rest } = parcelData;
 
         const parcel = this.parcelsRepository.create({
             ...rest,
@@ -37,17 +37,23 @@ export class ParcelsService {
             senderPhone: sender.phone,
             trackingNumber,
             price,
-            status: ParcelStatus.PENDING_MATCH,
+            status: currentHubId ? ParcelStatus.AT_HUB : ParcelStatus.PENDING_MATCH,
             destinationHub: { id: destinationHubId } as any,
+            currentHub: currentHubId ? { id: currentHubId } as any : null,
         });
 
         const savedParcel: any = await this.parcelsRepository.save(parcel);
 
         // Initial Tracking Log
+        const currentStatus = currentHubId ? ParcelStatus.AT_HUB : ParcelStatus.PENDING_MATCH;
+        const logDescription = currentHubId
+            ? `Parcel dropped at hub. Searching for matching global traveler.`
+            : 'Parcel created. Waiting for pickup or traveler match.';
+
         await this.trackingService.createLog(
             savedParcel,
-            ParcelStatus.PENDING_MATCH,
-            'Parcel created. Waiting for a traveler match.'
+            currentStatus,
+            logDescription
         );
 
         // Check for matches immediately

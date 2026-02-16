@@ -30,6 +30,7 @@ export default function MatchesPage() {
             const active = data.filter((p: any) => p.status === 'active_travel');
             setTravelPlans(active);
             if (active.length > 0) {
+                // Auto-select the latest one (backend already sorts by DESC createdAt)
                 setSelectedPlan(active[0].id);
             }
         } catch (err) {
@@ -92,21 +93,48 @@ export default function MatchesPage() {
                 <p className="text-slate-500 mt-1 font-medium italic">Showing parcels matching your exact route.</p>
             </div>
 
-            {/* Route Selector */}
-            <div className="bg-white rounded-[2rem] shadow-xl shadow-slate-100/50 border border-slate-100 p-8">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-4 ml-1">Select Your Travel Route</label>
-                <select
-                    className="w-full bg-slate-50 border-0 rounded-2xl px-6 py-4 text-sm font-bold text-slate-800 outline-none focus:ring-2 focus:ring-blue-500 transition-all appearance-none cursor-pointer"
-                    value={selectedPlan}
-                    onChange={(e) => setSelectedPlan(e.target.value)}
-                >
-                    {travelPlans.map(plan => (
-                        <option key={plan.id} value={plan.id}>
-                            {plan.fromLocation} → {plan.toLocation} ({new Date(plan.travelDate).toLocaleDateString()})
-                        </option>
-                    ))}
-                </select>
-            </div>
+            {/* Route Selector Hidden - Automatically using latest active route */}
+            {false && (
+                <div className="bg-white rounded-[2rem] shadow-xl shadow-slate-100/50 border border-slate-100 p-8">
+                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-4 ml-1">Select Your Travel Route</label>
+                    <select
+                        className="w-full bg-slate-50 border-0 rounded-2xl px-6 py-4 text-sm font-bold text-slate-800 outline-none focus:ring-2 focus:ring-blue-500 transition-all appearance-none cursor-pointer"
+                        value={selectedPlan}
+                        onChange={(e) => setSelectedPlan(e.target.value)}
+                    >
+                        {travelPlans.map(plan => (
+                            <option key={plan.id} value={plan.id}>
+                                {plan.fromLocation} → {plan.toLocation} ({new Date(plan.travelDate).toLocaleDateString()})
+                            </option>
+                        ))}
+                    </select>
+                </div>
+            )}
+
+            {/* Current Route Info */}
+            {travelPlans.length > 0 && (
+                <div className="bg-blue-600 rounded-[2rem] shadow-xl shadow-blue-100 p-8 text-white">
+                    <p className="text-[10px] font-black opacity-60 uppercase tracking-widest mb-2">Active Route</p>
+                    <div className="flex items-center justify-between flex-wrap gap-4">
+                        <div className="flex items-center gap-4">
+                            <div className="bg-white/20 p-3 rounded-xl backdrop-blur-sm">
+                                <MapPin className="h-6 w-6 text-white" />
+                            </div>
+                            <div>
+                                <h3 className="text-xl font-bold">
+                                    {travelPlans[0].fromLocation} → {travelPlans[0].toLocation}
+                                </h3>
+                                <p className="text-sm opacity-80 font-medium">
+                                    Planned for {new Date(travelPlans[0].travelDate).toLocaleDateString()}
+                                </p>
+                            </div>
+                        </div>
+                        <div className="bg-white/10 px-4 py-2 rounded-lg backdrop-blur-sm text-xs font-bold uppercase tracking-wider">
+                            Auto-Matched
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {/* Matches */}
             <div className="space-y-4">

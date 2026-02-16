@@ -2,12 +2,15 @@
 
 import { useState, useEffect } from 'react';
 import api from '@/lib/api-client';
-import { Package, MapPin, User, Phone, Loader2, CheckCircle, XCircle } from 'lucide-react';
+import { Package, MapPin, User, Phone, Loader2, CheckCircle, XCircle, ShieldCheck } from 'lucide-react';
 import { toast } from 'sonner';
+import QRVerification from '@/components/qr-verification';
 
 export default function TravelerDeliveriesPage() {
     const [deliveries, setDeliveries] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+    const [verifyingParcel, setVerifyingParcel] = useState<any>(null);
+    const [handoverData, setHandoverData] = useState<any>(null);
 
     useEffect(() => {
         fetchDeliveries();
@@ -27,14 +30,18 @@ export default function TravelerDeliveriesPage() {
         }
     };
 
-    const handleComplete = async (parcelId: string) => {
+    const startVerification = async (parcel: any) => {
         try {
-            await api.put(`/parcels/${parcelId}`, { status: 'delivered' });
-            toast.success('Delivery marked as complete!');
-            fetchDeliveries();
+            // Create a handover record first
+            const { data } = await api.post('/handovers', {
+                parcelId: parcel.id,
+                toUserId: parcel.senderId, // For simplicity, delivering back to sender or receiver?
+                type: 'delivery'
+            });
+            setHandoverData(data);
+            setVerifyingParcel(parcel);
         } catch (err: any) {
-            console.error(err);
-            toast.error(err.response?.data?.message || 'Failed to update status');
+            toast.error('Failed to initiate verification');
         }
     };
 
@@ -73,11 +80,11 @@ export default function TravelerDeliveriesPage() {
                                     </span>
                                 </div>
                                 <button
-                                    onClick={() => handleComplete(parcel.id)}
-                                    className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-xl transition-all flex items-center gap-2"
+                                    onClick={() => startVerification(parcel)}
+                                    className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-xl transition-all flex items-center gap-2"
                                 >
-                                    <CheckCircle className="h-4 w-4" />
-                                    Mark Delivered
+                                    <ShieldCheck className="h-4 w-4" />
+                                    Verify Delivery
                                 </button>
                             </div>
 
@@ -127,6 +134,21 @@ export default function TravelerDeliveriesPage() {
                             )}
                         </div>
                     ))}
+                </div>
+            )}
+            {verifyingParcel && (
+                <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                    <QRVerification
+                        handoverId={handoverData?.id}
+                        verifyCode={handoverData?.verificationCode}
+                        role="sender"
+                        title="Delivery Verification"
+                        onSuccess={() => {
+                            setVerifyingParcel(null);
+                            fetchDeliveries();
+                        }}
+                        onCancel={() => setVerifyingParcel(null)}
+                    />
                 </div>
             )}
         </div>

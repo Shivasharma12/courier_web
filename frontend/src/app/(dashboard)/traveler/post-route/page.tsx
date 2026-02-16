@@ -17,6 +17,8 @@ export default function PostRoutePage() {
         toLocation: '',
         toLat: 0,
         toLng: 0,
+        startMode: 'direct' as 'hub' | 'direct',
+        endMode: 'direct' as 'hub' | 'direct',
         startHubId: '',
         endHubId: '',
         travelDate: '',
@@ -73,25 +75,91 @@ export default function PostRoutePage() {
                 {/* Location Selection */}
                 <div className="grid md:grid-cols-2 gap-8">
                     <div className="space-y-4">
-                        <div className="flex items-center gap-2">
-                            <span className="bg-blue-100 text-blue-600 p-1.5 rounded-lg"><MapPin className="h-4 w-4" /></span>
-                            <h3 className="font-bold text-slate-800 uppercase text-[10px] tracking-widest">Pickup Location</h3>
+                        <div className="flex items-center justify-between mb-2">
+                            <div className="flex items-center gap-2">
+                                <span className="bg-blue-100 text-blue-600 p-1.5 rounded-lg"><MapPin className="h-4 w-4" /></span>
+                                <h3 className="font-bold text-slate-800 uppercase text-[10px] tracking-widest">Pickup Location</h3>
+                            </div>
+                            <div className="flex bg-slate-100 p-1 rounded-lg">
+                                <button
+                                    type="button"
+                                    onClick={() => setFormData({ ...formData, startMode: 'direct', startHubId: '' })}
+                                    className={`px-3 py-1 rounded-md text-[9px] font-black transition-all ${formData.startMode === 'direct' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                                >
+                                    Direct
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => setFormData({ ...formData, startMode: 'hub', fromLocation: '', fromLat: 0, fromLng: 0 })}
+                                    className={`px-3 py-1 rounded-md text-[9px] font-black transition-all ${formData.startMode === 'hub' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                                >
+                                    Hub
+                                </button>
+                            </div>
                         </div>
-                        <LocationPicker
-                            placeholder="Dehradun, Delhi, etc."
-                            onLocationSelect={(address, lat, lng) => setFormData({ ...formData, fromLocation: address, fromLat: lat, fromLng: lng })}
-                        />
+                        <div className="space-y-4">
+                            {formData.startMode === 'direct' ? (
+                                <LocationPicker
+                                    placeholder="Exact address or city..."
+                                    onLocationSelect={(address, lat, lng) => setFormData({ ...formData, fromLocation: address, fromLat: lat, fromLng: lng })}
+                                />
+                            ) : (
+                                <select
+                                    className="w-full bg-slate-50 border-0 rounded-2xl px-4 py-3 text-sm font-bold text-slate-800 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                                    value={formData.startHubId}
+                                    onChange={(e) => setFormData({ ...formData, startHubId: e.target.value })}
+                                >
+                                    <option value="">Select starting hub</option>
+                                    {hubs.map(hub => (
+                                        <option key={hub.id} value={hub.id}>{hub.name}</option>
+                                    ))}
+                                </select>
+                            )}
+                        </div>
                     </div>
 
                     <div className="space-y-4">
-                        <div className="flex items-center gap-2">
-                            <span className="bg-red-100 text-red-600 p-1.5 rounded-lg"><MapPin className="h-4 w-4" /></span>
-                            <h3 className="font-bold text-slate-800 uppercase text-[10px] tracking-widest">Drop-off Location</h3>
+                        <div className="flex items-center justify-between mb-2">
+                            <div className="flex items-center gap-2">
+                                <span className="bg-red-100 text-red-600 p-1.5 rounded-lg"><MapPin className="h-4 w-4" /></span>
+                                <h3 className="font-bold text-slate-800 uppercase text-[10px] tracking-widest">Drop-off Location</h3>
+                            </div>
+                            <div className="flex bg-slate-100 p-1 rounded-lg">
+                                <button
+                                    type="button"
+                                    onClick={() => setFormData({ ...formData, endMode: 'direct', endHubId: '' })}
+                                    className={`px-3 py-1 rounded-md text-[9px] font-black transition-all ${formData.endMode === 'direct' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                                >
+                                    Direct
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => setFormData({ ...formData, endMode: 'hub', toLocation: '', toLat: 0, toLng: 0 })}
+                                    className={`px-3 py-1 rounded-md text-[9px] font-black transition-all ${formData.endMode === 'hub' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                                >
+                                    Hub
+                                </button>
+                            </div>
                         </div>
-                        <LocationPicker
-                            placeholder="Where is it going?"
-                            onLocationSelect={(address, lat, lng) => setFormData({ ...formData, toLocation: address, toLat: lat, toLng: lng })}
-                        />
+                        <div className="space-y-4">
+                            {formData.endMode === 'direct' ? (
+                                <LocationPicker
+                                    placeholder="Where is it going?"
+                                    onLocationSelect={(address, lat, lng) => setFormData({ ...formData, toLocation: address, toLat: lat, toLng: lng })}
+                                />
+                            ) : (
+                                <select
+                                    className="w-full bg-slate-50 border-0 rounded-2xl px-4 py-3 text-sm font-bold text-slate-800 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                                    value={formData.endHubId}
+                                    onChange={(e) => setFormData({ ...formData, endHubId: e.target.value })}
+                                >
+                                    <option value="">Select ending hub</option>
+                                    {hubs.map(hub => (
+                                        <option key={hub.id} value={hub.id}>{hub.name}</option>
+                                    ))}
+                                </select>
+                            )}
+                        </div>
                     </div>
                 </div>
 
@@ -176,7 +244,13 @@ export default function PostRoutePage() {
                     </button>
                     <button
                         type="submit"
-                        disabled={loading || (!formData.fromLocation && !formData.startHubId) || (!formData.toLocation && !formData.endHubId)}
+                        disabled={
+                            loading ||
+                            (formData.startMode === 'direct' && !formData.fromLocation) ||
+                            (formData.startMode === 'hub' && !formData.startHubId) ||
+                            (formData.endMode === 'direct' && !formData.toLocation) ||
+                            (formData.endMode === 'hub' && !formData.endHubId)
+                        }
                         className="flex-[2] bg-blue-600 hover:bg-blue-700 text-white font-black py-5 px-8 rounded-2xl text-sm uppercase tracking-widest transition-all shadow-xl shadow-blue-100 disabled:opacity-50 flex items-center justify-center gap-3 transform hover:scale-[1.02] active:scale-95"
                     >
                         {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : <MapPin className="h-5 w-5" />}

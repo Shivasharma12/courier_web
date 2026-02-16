@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, In } from 'typeorm';
 import { Parcel } from '../parcels/entities/parcel.entity';
 import { TravelPlan } from '../travel-plans/entities/travel-plan.entity';
 import { ParcelStatus } from '../common/enums/parcel-status.enum';
@@ -49,7 +49,7 @@ export class TravelMatchingService {
 
         const parcels = await this.parcelRepository.find({
             where: {
-                status: ParcelStatus.PENDING_MATCH,
+                status: In([ParcelStatus.PENDING_MATCH, ParcelStatus.AT_HUB]),
                 assignedTo: null as any
             },
             relations: ['sender', 'currentHub', 'destinationHub']

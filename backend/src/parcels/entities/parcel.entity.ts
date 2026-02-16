@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn, Index } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
 import { Hub } from '../../hubs/entities/hub.entity';
 import { ParcelStatus } from '../../common/enums/parcel-status.enum';
@@ -73,10 +73,12 @@ export class Parcel {
     @Column({ default: ParcelStatus.PENDING_MATCH })
     status: string;
 
+    @Index()
     @ManyToOne(() => Hub, { nullable: true })
     @JoinColumn({ name: 'current_hub_id' })
     currentHub: Hub;
 
+    @Index()
     @ManyToOne(() => Hub)
     @JoinColumn({ name: 'destination_hub_id' })
     destinationHub: Hub;

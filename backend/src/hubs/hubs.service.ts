@@ -25,6 +25,7 @@ export class HubsService {
         // In a real app, we'd query parcels for incoming/outgoing
         // For now, we return hub details and some mock/calculated counters
         return {
+            ...hub,
             inventory: hub.currentLoad || 0,
             capacity: hub.capacity || 1000,
             earnings: hub.totalEarnings || 0,

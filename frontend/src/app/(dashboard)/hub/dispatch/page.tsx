@@ -3,19 +3,22 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '@/lib/api-client';
 import { Truck, MapPin, Package, ArrowRight, Loader2, Route, CheckCircle2 } from 'lucide-react';
+import { useAuthStore } from '@/store/auth-store';
 import { useState } from 'react';
 
 export default function DispatchPage() {
     const queryClient = useQueryClient();
-    const hubId = '0000-0000-0000'; // Mocked
+    const user = useAuthStore((state) => state.user);
+    const hubId = user?.hubId || '0000-0000-0000';
     const [selectedParcels, setSelectedParcels] = useState<string[]>([]);
 
-    const { data: parcels, isLoading } = useQuery({
+    const { data: parcels, isLoading, isError } = useQuery({
         queryKey: ['hub-dispatch', hubId],
         queryFn: async () => {
             const { data } = await api.get(`/parcels/hub-inventory/${hubId}`);
             return data;
         },
+        enabled: !!user?.hubId,
     });
 
     const dispatchMutation = useMutation({
@@ -31,6 +34,8 @@ export default function DispatchPage() {
     };
 
     if (isLoading) return <div className="flex justify-center py-20"><Loader2 className="h-10 w-10 animate-spin text-blue-600" /></div>;
+    if (isError) return <div className="flex justify-center py-20 text-red-500">Failed to load dispatch queue.</div>;
+    if (!user?.hubId) return <div className="flex justify-center py-20 text-slate-500">No hub assigned.</div>;
 
     return (
         <div className="space-y-8">

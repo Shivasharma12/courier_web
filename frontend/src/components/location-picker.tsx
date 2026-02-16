@@ -5,6 +5,7 @@ import { MapPin, Loader2 } from 'lucide-react';
 
 interface LocationPickerProps {
     onLocationSelect: (address: string, lat: number, lng: number) => void;
+    onLocationData?: (data: NominatimResult) => void;
     placeholder?: string;
     defaultLabel?: string;
 }
@@ -14,9 +15,20 @@ interface NominatimResult {
     lat: string;
     lon: string;
     place_id: number;
+    address?: {
+        suburb?: string;
+        neighbourhood?: string;
+        village?: string;
+        town?: string;
+        city?: string;
+        county?: string;
+        state?: string;
+        postcode?: string;
+        country?: string;
+    };
 }
 
-export default function LocationPicker({ onLocationSelect, placeholder, defaultLabel }: LocationPickerProps) {
+export default function LocationPicker({ onLocationSelect, onLocationData, placeholder, defaultLabel }: LocationPickerProps) {
     const [address, setAddress] = useState('');
     const [suggestions, setSuggestions] = useState<NominatimResult[]>([]);
     const [loading, setLoading] = useState(false);
@@ -71,6 +83,9 @@ export default function LocationPicker({ onLocationSelect, placeholder, defaultL
         setSuggestions([]);
         setShowSuggestions(false);
         onLocationSelect(suggestion.display_name, lat, lng);
+        if (onLocationData) {
+            onLocationData(suggestion);
+        }
     };
 
     return (

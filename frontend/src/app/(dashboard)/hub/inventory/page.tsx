@@ -3,13 +3,15 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '@/lib/api-client';
 import { Package, Truck, ArrowRight, Loader2, MapPin, Search } from 'lucide-react';
+import { useAuthStore } from '@/store/auth-store';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 
 export default function HubInventoryPage() {
     const [searchTerm, setSearchTerm] = useState('');
-    const hubId = '0000-0000-0000'; // Mocked hub ID
+    const user = useAuthStore((state) => state.user);
+    const hubId = user?.hubId || '0000-0000-0000';
 
     const queryClient = useQueryClient();
 
@@ -18,9 +20,10 @@ export default function HubInventoryPage() {
         return data;
     };
 
-    const { data: parcels, isLoading } = useQuery({
+    const { data: parcels, isLoading, isError } = useQuery({
         queryKey: ['hub-inventory', hubId],
         queryFn: fetchInventory,
+        enabled: !!user?.hubId,
     });
 
     const dropoffMutation = useMutation({
@@ -57,6 +60,8 @@ export default function HubInventoryPage() {
     );
 
     if (isLoading) return <div className="flex justify-center py-20"><Loader2 className="h-10 w-10 animate-spin text-blue-600" /></div>;
+    if (isError) return <div className="flex justify-center py-20 text-red-500">Failed to load inventory. Please try refreshing.</div>;
+    if (!user?.hubId) return <div className="flex justify-center py-20 text-slate-500">No hub assigned. Please contact administrator.</div>;
 
     return (
         <div className="space-y-8">

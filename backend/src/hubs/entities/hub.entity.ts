@@ -12,10 +12,10 @@ export class Hub {
     @Column()
     address: string;
 
-    @Column('float')
+    @Column('float', { nullable: true })
     lat: number;
 
-    @Column('float')
+    @Column('float', { nullable: true })
     lng: number;
 
     @Column('int', { default: 1000 })
@@ -29,6 +29,9 @@ export class Hub {
 
     @Column({ nullable: true })
     operatingHours: string; // e.g., "24/7" or "9AM-6PM"
+
+    @Column('text', { nullable: true })
+    description: string;
 
     @Column('float', { default: 0 })
     totalEarnings: number;

@@ -19,7 +19,8 @@ export default function LoginPage() {
         if (_hasHydrated && token && user) {
             const role = user.role;
             if (role === 'admin') router.replace('/admin');
-            else if (role === 'customer' || role === 'traveler') router.replace('/customer');
+            else if (role === 'customer') router.replace('/customer');
+            else if (role === 'traveler') router.replace('/traveler');
             else if (role === 'delivery_partner') router.replace('/delivery');
             else if (role === 'hub_manager') router.replace('/hub');
         }
@@ -37,7 +38,8 @@ export default function LoginPage() {
             // Redirect based on role
             const role = data.user.role;
             if (role === 'admin') router.replace('/admin');
-            else if (role === 'customer' || role === 'traveler') router.replace('/customer');
+            else if (role === 'customer') router.replace('/customer');
+            else if (role === 'traveler') router.replace('/traveler');
             else if (role === 'delivery_partner') router.replace('/delivery');
             else if (role === 'hub_manager') router.replace('/hub');
         } catch (err: any) {

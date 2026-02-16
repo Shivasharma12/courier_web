@@ -4,7 +4,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { Roles } from '../common/decorators/roles.decorator';
 import { Role } from '../common/enums/role.enum';
-import { DeliveryStatus } from './entities/delivery.entity';
+import { DeliveryStatus, DeliveryType, Delivery } from './entities/delivery.entity';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 
 @ApiTags('deliveries')
@@ -19,6 +19,22 @@ export class DeliveriesController {
     @ApiOperation({ summary: 'Get available delivery tasks' })
     findAvailable() {
         return this.deliveriesService.findAvailable();
+    }
+
+    @Post()
+    @Roles(Role.HUB_MANAGER, Role.ADMIN)
+    @ApiOperation({ summary: 'Create multiple deliveries (Dispatch)' })
+    async createBulk(@Body() data: { parcels: string[], type?: string }) {
+        const results: Delivery[] = [];
+        for (const parcelId of data.parcels) {
+            const delivery = await this.deliveriesService.create({
+                parcel: { id: parcelId } as any,
+                type: data.type || DeliveryType.FINAL_DELIVERY,
+                status: DeliveryStatus.ASSIGNED,
+            });
+            results.push(delivery);
+        }
+        return results;
     }
 
     @Patch(':id/status')

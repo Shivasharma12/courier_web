@@ -70,6 +70,7 @@ export default function DashboardSidebar() {
                     { name: 'Hub Status', href: '/hub', icon: LayoutDashboard },
                     { name: 'Inventory', href: '/hub/inventory', icon: Package },
                     { name: 'Dispatch', href: '/hub/dispatch', icon: Truck },
+                    { name: 'Hub Profile', href: '/hub/profile', icon: MapPin },
                 ];
             default:
                 return [];
