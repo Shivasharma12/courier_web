@@ -21,7 +21,6 @@ export default function LoginPage() {
             if (role === 'admin') router.replace('/admin');
             else if (role === 'customer') router.replace('/customer');
             else if (role === 'traveler') router.replace('/traveler');
-            else if (role === 'delivery_partner') router.replace('/delivery');
             else if (role === 'hub_manager') router.replace('/hub');
         }
     }, [_hasHydrated, token, user, router]);
@@ -32,6 +31,7 @@ export default function LoginPage() {
         setError('');
         try {
             const { data } = await api.post('/auth/login', { email, password });
+            console.log('DEBUG: Login Response User Data:', JSON.stringify(data.user));
             setAuth(data.user, data.access_token);
             toast.success('Welcome back!');
 
@@ -40,7 +40,6 @@ export default function LoginPage() {
             if (role === 'admin') router.replace('/admin');
             else if (role === 'customer') router.replace('/customer');
             else if (role === 'traveler') router.replace('/traveler');
-            else if (role === 'delivery_partner') router.replace('/delivery');
             else if (role === 'hub_manager') router.replace('/hub');
         } catch (err: any) {
             const msg = err.response?.data?.message || 'Login failed';

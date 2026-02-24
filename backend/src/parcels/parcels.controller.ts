@@ -8,6 +8,7 @@ import { RolesGuard } from '../common/guards/roles.guard';
 import { Roles } from '../common/decorators/roles.decorator';
 import { Role } from '../common/enums/role.enum';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
+import { UsersService } from '../users/users.service';
 
 @ApiTags('parcels')
 @ApiBearerAuth()
@@ -19,10 +20,21 @@ export class ParcelsController {
         private readonly matchingService: MatchingService,
         private readonly routeMatchingService: RouteMatchingService,
         private readonly travelMatchingService: TravelMatchingService,
+        private readonly usersService: UsersService,
     ) { }
 
+    private async getManagerHubId(user: any): Promise<string> {
+        let hubId = user.hubId;
+        if (!hubId) {
+            const userData = await this.usersService.findByEmail(user.email);
+            hubId = userData?.hubId;
+        }
+        if (!hubId) throw new Error('User is not assigned to a hub');
+        return hubId;
+    }
+
     @Get('matches-for-me')
-    @Roles(Role.DELIVERY_PARTNER)
+    @Roles(Role.TRAVELER)
     @ApiOperation({ summary: 'Get parcels matching traveler route' })
     findMatches(@Request() req) {
         return this.matchingService.findMatchesForTraveler(req.user.userId);
@@ -38,7 +50,7 @@ export class ParcelsController {
     @Roles(Role.CUSTOMER)
     @ApiOperation({ summary: 'Create a new parcel (Customer only)' })
     create(@Body() parcelData: any, @Request() req) {
-        return this.parcelsService.create(parcelData, req.user.userId);
+        return this.parcelsService.create(parcelData, req.user.id || req.user.userId);
     }
 
     @Get()
@@ -74,17 +86,25 @@ export class ParcelsController {
     }
 
     @Get('assigned-to-me')
-    @Roles(Role.TRAVELER, Role.DELIVERY_PARTNER)
+    @Roles(Role.TRAVELER)
     @ApiOperation({ summary: 'Get parcels assigned to current traveler/partner' })
     findAssignedToMe(@Request() req) {
-        return this.parcelsService.findByAssignedUser(req.user.userId);
+        return this.parcelsService.getByAssignedUser(req.user.userId);
+    }
+
+    @Get('hub-history/:hubId')
+    @Roles(Role.HUB_MANAGER, Role.ADMIN)
+    @ApiOperation({ summary: 'Get complete history of parcels handled by this hub' })
+    getHubHistory(@Param('hubId') hubId: string) {
+        return this.parcelsService.getHubHistory(hubId);
     }
 
     @Post(':id/confirmed-dropoff')
     @Roles(Role.HUB_MANAGER, Role.ADMIN)
     @ApiOperation({ summary: 'Confirm parcel drop-off at hub' })
-    confirmDropoff(@Param('id') id: string, @Request() req) {
-        return this.parcelsService.confirmHubDropoff(id, req.user.hubId);
+    async confirmDropoff(@Param('id') id: string, @Request() req) {
+        let hubId = req.user.role === Role.ADMIN ? null : await this.getManagerHubId(req.user);
+        return this.parcelsService.confirmHubDropoff(id, hubId || req.user.hubId);
     }
 
     @Post(':id/confirmed-pickup')
@@ -107,9 +127,30 @@ export class ParcelsController {
     }
 
     @Get('hub-inventory/:hubId')
-    @Roles(Role.HUB_MANAGER, Role.ADMIN)
+    @Roles(Role.HUB_MANAGER, Role.ADMIN, Role.TRAVELER)
     @ApiOperation({ summary: 'Get parcels currently at a specific hub' })
     getHubInventory(@Param('hubId') hubId: string) {
         return this.parcelsService.findByHub(hubId);
+    }
+
+    @Post(':id/assign-traveler')
+    @Roles(Role.TRAVELER)
+    @ApiOperation({ summary: 'Traveler claims a parcel to carry — hub manager must still dispatch' })
+    async assignTraveler(@Param('id') id: string, @Request() req) {
+        return this.parcelsService.assignTraveler(id, req.user.id || req.user.userId);
+    }
+
+    @Get('hub-incoming/:hubId')
+    @Roles(Role.HUB_MANAGER, Role.ADMIN)
+    @ApiOperation({ summary: 'Get parcels in transit heading to this hub' })
+    getIncomingParcels(@Param('hubId') hubId: string) {
+        return this.parcelsService.findIncomingForHub(hubId);
+    }
+
+    @Post(':id/dispatch-parcel')
+    @Roles(Role.HUB_MANAGER, Role.ADMIN)
+    @ApiOperation({ summary: 'Dispatch a parcel (sets IN_TRANSIT, notifies customer)' })
+    dispatchParcel(@Param('id') id: string) {
+        return this.parcelsService.dispatchParcel(id);
     }
 }

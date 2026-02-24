@@ -41,6 +41,9 @@ export class TravelPlan {
     @Column()
     travelDate: Date;
 
+    @Column({ nullable: true })
+    departureTime: string; // e.g., "14:30"
+
     @Column()
     mode: string; // bike, van, car, plane, etc.
 

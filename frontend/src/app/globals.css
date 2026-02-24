@@ -1,23 +1,25 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 
   --color-background: #ffffff;
-  --color-foreground: #0f172a;
+  --color-foreground: #020617;
 
   --color-primary: #2563eb;
   --color-primary-foreground: #ffffff;
 
   --color-secondary: #f8fafc;
-  --color-secondary-foreground: #0f172a;
+  --color-secondary-foreground: #020617;
 
   --color-muted: #f1f5f9;
   --color-muted-foreground: #64748b;
 
   --color-accent: #f1f5f9;
-  --color-accent-foreground: #0f172a;
+  --color-accent-foreground: #020617;
 
   --color-border: #e2e8f0;
   --color-input: #e2e8f0;
@@ -114,20 +116,21 @@
   }
 }
 
-@media (prefers-color-scheme: dark) {
-  @theme {
-    --color-background: #020617;
-    --color-foreground: #f8fafc;
+.dark {
+  --color-background: #020617;
+  --color-foreground: #f8fafc;
 
-    --color-muted: #1e293b;
-    --color-muted-foreground: #94a3b8;
+  --color-secondary: #0f172a;
+  --color-secondary-foreground: #f8fafc;
 
-    --color-accent: #1e293b;
-    --color-accent-foreground: #f8fafc;
+  --color-muted: #1e293b;
+  --color-muted-foreground: #94a3b8;
 
-    --color-border: #1e293b;
-    --color-input: #1e293b;
-  }
+  --color-accent: #1e293b;
+  --color-accent-foreground: #f8fafc;
+
+  --color-border: #1e293b;
+  --color-input: #1e293b;
 }
 
 @layer base {

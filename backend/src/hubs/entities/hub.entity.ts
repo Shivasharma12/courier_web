@@ -36,6 +36,18 @@ export class Hub {
     @Column('float', { default: 0 })
     totalEarnings: number;
 
+    @Column({ default: 'pending' }) // 'pending' | 'active' | 'rejected'
+    status: string;
+
+    @Column({ nullable: true })
+    shopPhoto: string; // Path/URL to uploaded shop photo
+
+    @Column('text', { nullable: true })
+    documentUrls: string; // JSON array of document URLs
+
+    @Column('text', { nullable: true })
+    rejectionReason: string;
+
     @CreateDateColumn()
     createdAt: Date;
 

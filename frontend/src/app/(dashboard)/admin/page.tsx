@@ -48,16 +48,16 @@ export default function AdminDashboard() {
         <div className="space-y-8 pb-20">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
                 <div>
-                    <h1 className="text-3xl font-bold text-slate-900 tracking-tight">System Oversight</h1>
-                    <p className="text-slate-500 mt-1 flex items-center gap-2">
+                    <h1 className="text-3xl font-bold text-foreground tracking-tight">System Oversight</h1>
+                    <p className="text-muted-foreground mt-1 flex items-center gap-2">
                         <Globe className="h-4 w-4 text-blue-500" /> Global logistics performance and infrastructure management.
                     </p>
                 </div>
                 <div className="flex gap-3">
-                    <Link href="/admin/users" className="bg-slate-900 text-white px-5 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 hover:bg-slate-800 transition-all shadow-lg shadow-slate-200">
+                    <Link href="/admin/users" className="bg-slate-900 dark:bg-slate-800 text-white px-5 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 hover:bg-slate-800 dark:hover:bg-slate-700 transition-all shadow-lg shadow-slate-200/20">
                         <Users className="h-4 w-4" /> Manage Users
                     </Link>
-                    <Link href="/admin/hubs" className="bg-blue-600 text-white px-5 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 hover:bg-blue-700 transition-all shadow-lg shadow-blue-200">
+                    <Link href="/admin/hubs" className="bg-blue-600 text-white px-5 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 hover:bg-blue-700 transition-all shadow-lg shadow-blue-200/20">
                         <Plus className="h-4 w-4" /> New Hub
                     </Link>
                 </div>
@@ -68,22 +68,22 @@ export default function AdminDashboard() {
                 {stats.map((stat) => {
                     const Icon = stat.icon;
                     return (
-                        <div key={stat.name} className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col gap-4 group hover:scale-[1.02] transition-all">
+                        <div key={stat.name} className="bg-background dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-border flex flex-col gap-4 group hover:scale-[1.02] transition-all">
                             <div className="flex justify-between items-start">
-                                <div className={cn("p-3 rounded-xl transition-transform group-hover:scale-110", stat.color)}>
+                                <div className={cn("p-3 rounded-xl transition-transform group-hover:scale-110", stat.color, "dark:bg-opacity-10")}>
                                     <Icon className="h-6 w-6" />
                                 </div>
                                 <div className={cn(
                                     "flex items-center gap-1 text-[10px] font-bold px-2 py-1 rounded-lg uppercase tracking-wider",
-                                    stat.trendType === 'up' ? "text-green-600 bg-green-50" : "text-slate-500 bg-slate-50"
+                                    stat.trendType === 'up' ? "text-green-600 bg-green-50 dark:bg-green-900/20" : "text-muted-foreground bg-muted"
                                 )}>
                                     {stat.trendType === 'up' ? <ArrowUpRight className="h-3 w-3" /> : null}
                                     {stat.trend}
                                 </div>
                             </div>
                             <div>
-                                <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">{stat.name}</p>
-                                <p className="text-2xl font-bold text-slate-900 mt-1">{stat.value}</p>
+                                <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest">{stat.name}</p>
+                                <p className="text-2xl font-bold text-foreground mt-1">{stat.value}</p>
                             </div>
                         </div>
                     );
@@ -93,31 +93,31 @@ export default function AdminDashboard() {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {/* Logistics Flow Chart Mockup */}
                 <div className="lg:col-span-2 space-y-6">
-                    <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
+                    <div className="bg-background dark:bg-slate-900 p-8 rounded-2xl shadow-sm border border-border">
                         <div className="flex justify-between items-center mb-8">
-                            <h3 className="font-bold text-slate-900 flex items-center gap-2">
+                            <h3 className="font-bold text-foreground flex items-center gap-2">
                                 <Activity className="h-5 w-5 text-blue-600" /> Operational Throughput
                             </h3>
-                            <div className="flex bg-slate-100 p-1 rounded-lg gap-1">
-                                <button className="px-3 py-1 bg-white text-xs font-bold rounded-md shadow-sm">Daily</button>
-                                <button className="px-3 py-1 text-xs font-bold text-slate-400">Weekly</button>
+                            <div className="flex bg-muted p-1 rounded-lg gap-1">
+                                <button className="px-3 py-1 bg-background text-xs font-bold rounded-md shadow-sm text-foreground">Daily</button>
+                                <button className="px-3 py-1 text-xs font-bold text-muted-foreground">Weekly</button>
                             </div>
                         </div>
                         <div className="h-64 flex items-end justify-between gap-3 px-4">
                             {[65, 80, 45, 95, 70, 85, 60, 75, 50, 90, 85, 70].map((h, i) => (
                                 <div key={i} className="flex-1 group relative">
                                     <div
-                                        className="bg-blue-600/10 group-hover:bg-blue-600 transition-all rounded-full w-full"
+                                        className="bg-blue-600/10 dark:bg-blue-600/20 group-hover:bg-blue-600 transition-all rounded-full w-full"
                                         style={{ height: `${h}%` }}
                                     >
-                                        <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[10px] py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap font-bold">
+                                        <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-900 dark:bg-slate-800 text-white text-[10px] py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap font-bold">
                                             {h}% Utilized
                                         </div>
                                     </div>
                                 </div>
                             ))}
                         </div>
-                        <div className="flex justify-between mt-4 px-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                        <div className="flex justify-between mt-4 px-2 text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
                             <span>00:00</span>
                             <span>06:00</span>
                             <span>12:00</span>
@@ -127,8 +127,8 @@ export default function AdminDashboard() {
                     </div>
 
                     {/* Infrastructure Status */}
-                    <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
-                        <h3 className="font-bold text-slate-900 flex items-center gap-2 mb-6">
+                    <div className="bg-background dark:bg-slate-900 p-8 rounded-2xl shadow-sm border border-border">
+                        <h3 className="font-bold text-foreground flex items-center gap-2 mb-6">
                             <Database className="h-5 w-5 text-purple-600" /> Infrastructure Health
                         </h3>
                         <div className="grid md:grid-cols-3 gap-6">
@@ -137,14 +137,14 @@ export default function AdminDashboard() {
                                 { name: 'Matching Engine', status: 'High Load', latency: '142ms', color: 'bg-amber-500' },
                                 { name: 'Payment Gateway', status: 'Operational', latency: '89ms', color: 'bg-green-500' },
                             ].map((svc) => (
-                                <div key={svc.name} className="p-4 rounded-xl bg-slate-50 border border-slate-100 space-y-2">
+                                <div key={svc.name} className="p-4 rounded-xl bg-secondary dark:bg-slate-800/50 border border-border space-y-2">
                                     <div className="flex items-center justify-between">
-                                        <p className="text-xs font-bold text-slate-900">{svc.name}</p>
+                                        <p className="text-xs font-bold text-foreground">{svc.name}</p>
                                         <div className={cn("w-2 h-2 rounded-full animate-pulse", svc.color)}></div>
                                     </div>
                                     <div className="flex justify-between items-end">
-                                        <p className="text-[10px] text-slate-500 uppercase tracking-widest">{svc.status}</p>
-                                        <p className="text-xs font-mono font-bold text-slate-400">{svc.latency}</p>
+                                        <p className="text-[10px] text-muted-foreground uppercase tracking-widest">{svc.status}</p>
+                                        <p className="text-xs font-mono font-bold text-muted-foreground">{svc.latency}</p>
                                     </div>
                                 </div>
                             ))}
@@ -171,26 +171,26 @@ export default function AdminDashboard() {
                         <div className="absolute -right-10 -bottom-10 w-40 h-40 bg-blue-600/20 rounded-full blur-3xl"></div>
                     </div>
 
-                    <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-                        <h3 className="font-bold text-slate-900 flex items-center justify-between mb-6">
+                    <div className="bg-background dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-border">
+                        <h3 className="font-bold text-foreground flex items-center justify-between mb-6">
                             <span className="flex items-center gap-2">
                                 <LayoutDashboard className="h-5 w-5 text-blue-600" /> Active Hubs
                             </span>
-                            <span className="text-[10px] font-bold text-slate-400 bg-slate-50 px-2 py-1 rounded-lg">View All</span>
+                            <span className="text-[10px] font-bold text-muted-foreground bg-muted px-2 py-1 rounded-lg">View All</span>
                         </h3>
                         <div className="space-y-4">
                             {hubs?.slice(0, 5).map((hub: any) => (
-                                <div key={hub.id} className="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 transition-colors group cursor-pointer">
-                                    <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600 font-bold text-sm">
+                                <div key={hub.id} className="flex items-center gap-3 p-3 rounded-xl hover:bg-muted/50 transition-colors group cursor-pointer">
+                                    <div className="w-10 h-10 rounded-lg bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400 font-bold text-sm">
                                         {hub.name.charAt(0)}
                                     </div>
                                     <div className="flex-1">
-                                        <p className="text-sm font-bold text-slate-900">{hub.name}</p>
-                                        <p className="text-[10px] text-slate-500 truncate">{hub.address}</p>
+                                        <p className="text-sm font-bold text-foreground">{hub.name}</p>
+                                        <p className="text-[10px] text-muted-foreground truncate">{hub.address}</p>
                                     </div>
                                     <div className="text-right">
-                                        <p className="text-[10px] font-bold text-slate-900 tracking-tighter">{(hub.currentLoad / hub.capacity * 100).toFixed(0)}% Full</p>
-                                        <div className="w-8 h-1 bg-slate-100 rounded-full mt-1 overflow-hidden">
+                                        <p className="text-[10px] font-bold text-foreground tracking-tighter">{(hub.currentLoad / hub.capacity * 100).toFixed(0)}% Full</p>
+                                        <div className="w-8 h-1 bg-muted rounded-full mt-1 overflow-hidden">
                                             <div className="h-full bg-blue-600" style={{ width: `${hub.currentLoad / hub.capacity * 100}%` }}></div>
                                         </div>
                                     </div>

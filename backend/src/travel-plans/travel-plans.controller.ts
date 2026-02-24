@@ -15,7 +15,7 @@ export class TravelPlansController {
     ) { }
 
     @Post()
-    @Roles(Role.TRAVELER, Role.DELIVERY_PARTNER)
+    @Roles(Role.TRAVELER)
     create(@Request() req, @Body() data: any) {
         return this.travelPlansService.create(req.user.id, data);
     }
@@ -26,7 +26,7 @@ export class TravelPlansController {
     }
 
     @Get('mine')
-    @Roles(Role.TRAVELER, Role.DELIVERY_PARTNER)
+    @Roles(Role.TRAVELER)
     findMine(@Request() req) {
         return this.travelPlansService.findByUser(req.user.id);
     }
@@ -42,25 +42,25 @@ export class TravelPlansController {
     }
 
     @Get(':id/matches')
-    @Roles(Role.TRAVELER, Role.DELIVERY_PARTNER)
+    @Roles(Role.TRAVELER)
     findMatches(@Param('id') id: string) {
         return this.travelMatchingService.findMatchingParcels(id);
     }
 
     @Post(':id/assign/:parcelId')
-    @Roles(Role.TRAVELER, Role.DELIVERY_PARTNER)
+    @Roles(Role.TRAVELER)
     assignParcel(@Param('id') id: string, @Param('parcelId') parcelId: string) {
         return this.travelMatchingService.assignParcel(parcelId, id);
     }
 
     @Put(':id')
-    @Roles(Role.TRAVELER, Role.DELIVERY_PARTNER, Role.ADMIN)
+    @Roles(Role.TRAVELER, Role.ADMIN)
     update(@Param('id') id: string, @Body() data: any) {
         return this.travelPlansService.update(id, data);
     }
 
     @Delete(':id')
-    @Roles(Role.TRAVELER, Role.DELIVERY_PARTNER, Role.ADMIN)
+    @Roles(Role.TRAVELER, Role.ADMIN)
     remove(@Param('id') id: string) {
         return this.travelPlansService.remove(id);
     }

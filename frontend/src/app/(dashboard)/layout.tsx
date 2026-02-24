@@ -22,7 +22,7 @@ export default function DashboardLayout({
     if (!_hasHydrated || !token) return null;
 
     return (
-        <div className="flex bg-slate-50 min-h-screen">
+        <div className="flex bg-slate-50 dark:bg-slate-950 min-h-screen">
             <DashboardSidebar />
             <main className="flex-1 p-8 overflow-y-auto max-h-screen">
                 <div className="max-w-7xl mx-auto">

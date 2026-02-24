@@ -26,7 +26,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-type UserRole = 'all' | 'customer' | 'delivery_partner' | 'hub_manager' | 'traveler' | 'admin';
+type UserRole = 'all' | 'customer' | 'hub_manager' | 'traveler' | 'admin';
 
 interface User {
     id: string;
@@ -34,10 +34,9 @@ interface User {
     email: string;
     phone: string;
     role: string;
+    roles?: string[];
     createdAt: string;
     hubId?: string;
-    vehicleType?: string;
-    isAvailable?: boolean;
 }
 
 export default function AdminUsersPage() {
@@ -85,7 +84,6 @@ export default function AdminUsersPage() {
         { value: 'all', label: 'All Users', icon: Users, count: stats?.total || 0 },
         { value: 'customer', label: 'Customers', icon: Package, count: stats?.byRole?.customer || 0 },
         { value: 'traveler', label: 'Travelers', icon: MapPin, count: stats?.byRole?.traveler || 0 },
-        { value: 'delivery_partner', label: 'Delivery Partners', icon: Truck, count: stats?.byRole?.delivery_partner || 0 },
         { value: 'hub_manager', label: 'Hub Managers', icon: Shield, count: stats?.byRole?.hub_manager || 0 },
     ];
 
@@ -95,15 +93,65 @@ export default function AdminUsersPage() {
         user.phone.includes(searchQuery)
     ) || [];
 
-    const getRoleBadgeColor = (role: string) => {
-        const colors: Record<string, string> = {
-            admin: 'bg-purple-100 text-purple-700 border-purple-200',
-            customer: 'bg-blue-100 text-blue-700 border-blue-200',
-            delivery_partner: 'bg-green-100 text-green-700 border-green-200',
-            hub_manager: 'bg-amber-100 text-amber-700 border-amber-200',
-            traveler: 'bg-pink-100 text-pink-700 border-pink-200',
-        };
-        return colors[role] || 'bg-slate-100 text-slate-700 border-slate-200';
+    const getRoles = (user: User): { label: string; color: string; icon?: typeof Package }[] => {
+        let rawRoles = user.roles;
+        if (typeof rawRoles === 'string') {
+            try { rawRoles = JSON.parse(rawRoles); } catch (e) { rawRoles = []; }
+        }
+
+        const roles = Array.isArray(rawRoles) ? [...rawRoles] : [];
+        const primaryRole = String(user?.role || '').toLowerCase();
+
+        // Ensure primary role is in the list for mapping
+        if (primaryRole && !roles.map(r => String(r).toLowerCase()).includes(primaryRole)) {
+            roles.push(primaryRole);
+        }
+
+        const rLower = roles.map(s => String(s || '').toLowerCase());
+        const badges: { label: string; color: string; icon?: typeof Package }[] = [];
+
+        if (rLower.includes('customer')) {
+            badges.push({
+                label: 'Sender',
+                color: 'bg-blue-50 text-blue-700 border-blue-200',
+                icon: Package
+            });
+        }
+        if (rLower.includes('traveler')) {
+            badges.push({
+                label: 'Traveler',
+                color: 'bg-pink-50 text-pink-700 border-pink-200',
+                icon: MapPin
+            });
+        }
+
+        if (primaryRole === 'hub_manager' || rLower.includes('hub_manager')) {
+            if (!badges.find(b => b.label === 'Hub Manager')) {
+                badges.push({
+                    label: 'Hub Manager',
+                    color: 'bg-amber-50 text-amber-700 border-amber-200',
+                    icon: Shield
+                });
+            }
+        }
+        if (primaryRole === 'admin' || rLower.includes('admin')) {
+            if (!badges.find(b => b.label === 'Admin')) {
+                badges.push({
+                    label: 'Admin',
+                    color: 'bg-purple-50 text-purple-700 border-purple-200',
+                    icon: Shield
+                });
+            }
+        }
+
+        if (badges.length === 0) {
+            badges.push({
+                label: (user?.role || 'User').replace('_', ' '),
+                color: 'bg-slate-50 text-slate-700 border-slate-200'
+            });
+        }
+
+        return badges;
     };
 
     return (
@@ -123,7 +171,7 @@ export default function AdminUsersPage() {
             </div>
 
             {/* Statistics Cards */}
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {roleFilters.map((filter) => {
                     const Icon = filter.icon;
                     return (
@@ -219,12 +267,31 @@ export default function AdminUsersPage() {
                                             </div>
                                         </td>
                                         <td className="px-6 py-4">
-                                            <span className={cn(
-                                                "px-3 py-1 rounded-full text-xs font-bold border",
-                                                getRoleBadgeColor(user.role)
-                                            )}>
-                                                {user.role.replace('_', ' ').toUpperCase()}
-                                            </span>
+                                            <div className="flex flex-col gap-2">
+                                                <div className="flex flex-wrap gap-1.5">
+                                                    {getRoles(user).map((badge, idx) => {
+                                                        const Icon = badge.icon;
+                                                        return (
+                                                            <span key={idx} className={cn(
+                                                                "px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider border flex items-center gap-1.5 whitespace-nowrap",
+                                                                badge.color
+                                                            )}>
+                                                                {Icon && <Icon className="h-3 w-3" />}
+                                                                {badge.label}
+                                                            </span>
+                                                        );
+                                                    })}
+                                                </div>
+                                                {/* Show current active role indicator if multiple roles exist */}
+                                                {(user.roles || []).length > 1 && (
+                                                    <div className="flex items-center gap-1.5 px-1">
+                                                        <span className="flex h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse"></span>
+                                                        <span className="text-[9px] font-black text-slate-400 uppercase tracking-tighter">
+                                                            Current: {String(user.role).toLowerCase() === 'customer' ? 'Sender' : 'Traveler'} Mode
+                                                        </span>
+                                                    </div>
+                                                )}
+                                            </div>
                                         </td>
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-2 text-sm text-slate-600">
@@ -333,8 +400,13 @@ function UserCreateModal({ onClose, onSuccess }: { onClose: () => void; onSucces
         email: '',
         password: '',
         phone: '',
-        role: 'customer',
     });
+    const [roles, setRoles] = useState<string[]>(['customer']);
+    const [primaryRole, setPrimaryRole] = useState('customer');
+
+    const toggleRole = (r: string) => {
+        setRoles(prev => prev.includes(r) ? prev.filter(x => x !== r) : [...prev, r]);
+    };
 
     const createMutation = useMutation({
         mutationFn: async (userData: any) => {
@@ -347,12 +419,18 @@ function UserCreateModal({ onClose, onSuccess }: { onClose: () => void; onSucces
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        createMutation.mutate(formData);
+        const finalRoles = roles.length > 0 ? roles : [primaryRole];
+        const payload = {
+            ...formData,
+            role: primaryRole,
+            roles: finalRoles
+        };
+        createMutation.mutate(payload);
     };
 
     return (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-2xl p-6 max-w-lg w-full max-h-[90vh] overflow-y-auto">
+            <div className="bg-white rounded-2xl p-6 max-w-md w-full max-h-[90vh] overflow-y-auto">
                 <div className="flex items-center justify-between mb-6">
                     <div>
                         <h3 className="font-bold text-xl text-slate-900">Create New User</h3>
@@ -394,7 +472,7 @@ function UserCreateModal({ onClose, onSuccess }: { onClose: () => void; onSucces
                             type="password"
                             value={formData.password}
                             onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                            className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                            className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
                             placeholder="••••••••"
                             required
                             minLength={6}
@@ -414,28 +492,62 @@ function UserCreateModal({ onClose, onSuccess }: { onClose: () => void; onSucces
                         />
                     </div>
 
-                    <div>
-                        <label className="block text-sm font-bold text-slate-700 mb-2">User Role</label>
-                        {/* All 5 user roles available */}
-                        <select
-                            value={formData.role}
-                            onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-                            className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
-                        >
-                            <option value="customer">Customer</option>
-                            <option value="traveler">Traveler</option>
-                            <option value="delivery_partner">Delivery Partner</option>
-                            <option value="hub_manager">Hub Manager</option>
-                            <option value="admin">Admin</option>
-                        </select>
-                        <p className="text-xs text-slate-500 mt-1">Select the appropriate role for this user</p>
+                    <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-4">
+                        <label className="block text-sm font-bold text-slate-700">Account Access Modes</label>
+                        <div className="grid grid-cols-2 gap-3">
+                            <button
+                                type="button"
+                                onClick={() => toggleRole('customer')}
+                                className={cn(
+                                    "flex items-center gap-2 p-3 rounded-xl border-2 transition-all hover:border-slate-300",
+                                    roles.includes('customer') ? "bg-blue-50 border-blue-500 text-blue-700" : "bg-white border-slate-200 text-slate-600"
+                                )}
+                            >
+                                <div className={cn("h-4 w-4 rounded border-2 flex items-center justify-center", roles.includes('customer') ? "bg-blue-600 border-blue-600" : "border-slate-300")}>
+                                    {roles.includes('customer') && <Users className="h-3 w-3 text-white" />}
+                                </div>
+                                <span className="text-sm font-bold">Sender</span>
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => toggleRole('traveler')}
+                                className={cn(
+                                    "flex items-center gap-2 p-3 rounded-xl border-2 transition-all hover:border-slate-300",
+                                    roles.includes('traveler') ? "bg-pink-50 border-pink-500 text-pink-700" : "bg-white border-slate-200 text-slate-600"
+                                )}
+                            >
+                                <div className={cn("h-4 w-4 rounded border-2 flex items-center justify-center", roles.includes('traveler') ? "bg-pink-600 border-pink-600" : "border-slate-300")}>
+                                    {roles.includes('traveler') && <Users className="h-3 w-3 text-white" />}
+                                </div>
+                                <span className="text-sm font-bold">Traveler</span>
+                            </button>
+                        </div>
+
+                        <div>
+                            <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Primary Display Role & Admin Access</label>
+                            <select
+                                value={primaryRole}
+                                onChange={(e) => {
+                                    setPrimaryRole(e.target.value);
+                                    if (!['admin', 'hub_manager'].includes(e.target.value) && !roles.includes(e.target.value)) {
+                                        setRoles(prev => [...prev, e.target.value]);
+                                    }
+                                }}
+                                className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none bg-white font-medium"
+                            >
+                                <option value="customer">Sender</option>
+                                <option value="traveler">Traveler</option>
+                                <option value="admin">Platform Administrator</option>
+                                <option value="hub_manager">Hub Manager</option>
+                            </select>
+                        </div>
                     </div>
 
                     {createMutation.isError && (
                         <div className="bg-red-50 border border-red-200 rounded-xl p-3 flex items-start gap-2">
                             <AlertCircle className="h-4 w-4 text-red-600 mt-0.5 flex-shrink-0" />
                             <p className="text-sm text-red-700">
-                                {(createMutation.error as any)?.response?.data?.message || 'Failed to create user. Please try again.'}
+                                {((createMutation.error as any)?.response?.data?.message) || 'Failed to create user. Please try again.'}
                             </p>
                         </div>
                     )}
@@ -478,8 +590,13 @@ function UserEditModal({ user, onClose, onSuccess }: { user: User; onClose: () =
         name: user.name,
         email: user.email,
         phone: user.phone,
-        role: user.role,
     });
+    const [roles, setRoles] = useState<string[]>(Array.isArray(user.roles) ? user.roles : [user.role]);
+    const [primaryRole, setPrimaryRole] = useState(user.role);
+
+    const toggleRole = (r: string) => {
+        setRoles(prev => prev.includes(r) ? prev.filter(x => x !== r) : [...prev, r]);
+    };
 
     const updateMutation = useMutation({
         mutationFn: async (updates: any) => {
@@ -492,12 +609,18 @@ function UserEditModal({ user, onClose, onSuccess }: { user: User; onClose: () =
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        updateMutation.mutate(formData);
+        const finalRoles = roles.length > 0 ? roles : [primaryRole];
+        const payload = {
+            ...formData,
+            role: primaryRole,
+            roles: finalRoles
+        };
+        updateMutation.mutate(payload);
     };
 
     return (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-2xl p-6 max-w-lg w-full max-h-[90vh] overflow-y-auto">
+            <div className="bg-white rounded-2xl p-6 max-w-md w-full max-h-[90vh] overflow-y-auto">
                 <div className="flex items-center justify-between mb-6">
                     <h3 className="font-bold text-xl text-slate-900">Edit User</h3>
                     <button onClick={onClose} className="p-2 hover:bg-slate-100 rounded-lg transition-colors">
@@ -539,20 +662,65 @@ function UserEditModal({ user, onClose, onSuccess }: { user: User; onClose: () =
                         />
                     </div>
 
-                    <div>
-                        <label className="block text-sm font-bold text-slate-700 mb-2">Role</label>
-                        <select
-                            value={formData.role}
-                            onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-                            className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
-                        >
-                            <option value="customer">Customer</option>
-                            <option value="traveler">Traveler</option>
-                            <option value="delivery_partner">Delivery Partner</option>
-                            <option value="hub_manager">Hub Manager</option>
-                            <option value="admin">Admin</option>
-                        </select>
+                    <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-4">
+                        <label className="block text-sm font-bold text-slate-700">Account Access Modes</label>
+                        <div className="grid grid-cols-2 gap-3">
+                            <button
+                                type="button"
+                                onClick={() => toggleRole('customer')}
+                                className={cn(
+                                    "flex items-center gap-2 p-3 rounded-xl border-2 transition-all hover:border-slate-300",
+                                    roles.includes('customer') ? "bg-blue-50 border-blue-500 text-blue-700" : "bg-white border-slate-200 text-slate-600"
+                                )}
+                            >
+                                <div className={cn("h-4 w-4 rounded border-2 flex items-center justify-center", roles.includes('customer') ? "bg-blue-600 border-blue-600" : "border-slate-300")}>
+                                    {roles.includes('customer') && <Users className="h-3 w-3 text-white" />}
+                                </div>
+                                <span className="text-sm font-bold">Sender</span>
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => toggleRole('traveler')}
+                                className={cn(
+                                    "flex items-center gap-2 p-3 rounded-xl border-2 transition-all hover:border-slate-300",
+                                    roles.includes('traveler') ? "bg-pink-50 border-pink-500 text-pink-700" : "bg-white border-slate-200 text-slate-600"
+                                )}
+                            >
+                                <div className={cn("h-4 w-4 rounded border-2 flex items-center justify-center", roles.includes('traveler') ? "bg-pink-600 border-pink-600" : "border-slate-300")}>
+                                    {roles.includes('traveler') && <Users className="h-3 w-3 text-white" />}
+                                </div>
+                                <span className="text-sm font-bold">Traveler</span>
+                            </button>
+                        </div>
+
+                        <div>
+                            <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Primary Display Role & Admin Access</label>
+                            <select
+                                value={primaryRole}
+                                onChange={(e) => {
+                                    setPrimaryRole(e.target.value);
+                                    if (!['admin', 'hub_manager'].includes(e.target.value) && !roles.includes(e.target.value)) {
+                                        setRoles(prev => Array.from(new Set([...prev, e.target.value])));
+                                    }
+                                }}
+                                className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none bg-white font-medium"
+                            >
+                                <option value="customer">Sender</option>
+                                <option value="traveler">Traveler</option>
+                                <option value="admin">Platform Administrator</option>
+                                <option value="hub_manager">Hub Manager</option>
+                            </select>
+                        </div>
                     </div>
+
+                    {updateMutation.isError && (
+                        <div className="bg-red-50 border border-red-200 rounded-xl p-3 flex items-start gap-2">
+                            <AlertCircle className="h-4 w-4 text-red-600 mt-0.5 flex-shrink-0" />
+                            <p className="text-sm text-red-700">
+                                {((updateMutation.error as any)?.response?.data?.message) || 'Failed to update user.'}
+                            </p>
+                        </div>
+                    )}
 
                     <div className="flex gap-3 pt-4">
                         <button

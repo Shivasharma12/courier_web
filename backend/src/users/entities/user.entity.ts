@@ -23,37 +23,15 @@ export class User {
     @Column({ default: 'customer' })
     role: string;
 
+    @Column({ type: 'jsonb', nullable: true })
+    roles: string[];
+
     @ManyToOne(() => Hub, { nullable: true })
     @JoinColumn({ name: 'hub_id' })
     hub: Hub;
 
     @Column({ name: 'hub_id', nullable: true })
     hubId: string;
-
-    // Delivery Boy specific fields
-    @Column({ nullable: true })
-    vehicleType: string;
-
-    @Column({ nullable: true })
-    vehicleNumber: string;
-
-    @Column({ nullable: true })
-    licenseNumber: string;
-
-    @Column({ default: false })
-    isAvailable: boolean;
-
-    @Column('float', { nullable: true })
-    currentLat: number;
-
-    @Column('float', { nullable: true })
-    currentLng: number;
-
-    @Column('int', { default: 5 })
-    maxCapacity: number; // Maximum parcels they can carry
-
-    @Column('int', { default: 0 })
-    currentLoad: number; // Current number of parcels
 
     // Traveler matching coordinates
     @Column('float', { nullable: true })
@@ -67,6 +45,9 @@ export class User {
 
     @Column('float', { nullable: true })
     travelEndLng: number;
+
+    @Column({ nullable: true })
+    vehicleType: string;
 
     @CreateDateColumn()
     createdAt: Date;

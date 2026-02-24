@@ -14,6 +14,7 @@ export default function RegisterPage() {
         phone: '',
         role: 'customer',
     });
+    const [enableDualRole, setEnableDualRole] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const router = useRouter();
@@ -23,7 +24,12 @@ export default function RegisterPage() {
         setLoading(true);
         setError('');
         try {
-            await api.post('/auth/register', formData);
+            const { role, ...rest } = formData;
+            const payload = role === 'both'
+                ? { ...rest, role: 'customer', roles: ['customer', 'traveler'] }
+                : { ...rest, role, roles: [role] };
+
+            await api.post('/auth/register', payload);
             toast.success('Account created! Please sign in.');
             router.push('/login');
         } catch (err: any) {
@@ -89,17 +95,22 @@ export default function RegisterPage() {
                             />
                         </div>
                         <div>
-                            <label className="text-sm font-medium text-slate-700 block mb-1">Role</label>
+                            <label className="text-sm font-medium text-slate-700 block mb-1">Choose Your Role</label>
                             <select
-                                className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all bg-white"
+                                className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all bg-white font-medium"
                                 value={formData.role}
                                 onChange={(e) => setFormData({ ...formData, role: e.target.value })}
                             >
-                                <option value="customer">Customer</option>
+                                <option value="customer">Customer (Sender)</option>
                                 <option value="traveler">Traveler</option>
-                                <option value="delivery_partner">Delivery Partner</option>
+                                <option value="both">⚡ Sender + Traveler (Both)</option>
                                 <option value="hub_manager">Hub Manager</option>
                             </select>
+                            {formData.role === 'both' && (
+                                <p className="text-xs text-blue-600 mt-1 font-medium">
+                                    ✅ You will have access to both Sender and Traveler dashboards
+                                </p>
+                            )}
                         </div>
                         <div>
                             <label className="text-sm font-medium text-slate-700 block mb-1">Password</label>

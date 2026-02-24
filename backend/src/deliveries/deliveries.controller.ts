@@ -15,7 +15,7 @@ export class DeliveriesController {
     constructor(private readonly deliveriesService: DeliveriesService) { }
 
     @Get('available')
-    @Roles(Role.DELIVERY_PARTNER)
+    @Roles(Role.TRAVELER, Role.ADMIN)
     @ApiOperation({ summary: 'Get available delivery tasks' })
     findAvailable() {
         return this.deliveriesService.findAvailable();
@@ -38,7 +38,7 @@ export class DeliveriesController {
     }
 
     @Patch(':id/status')
-    @Roles(Role.DELIVERY_PARTNER)
+    @Roles(Role.TRAVELER, Role.ADMIN)
     @ApiOperation({ summary: 'Update delivery status' })
     updateStatus(
         @Param('id') id: string,
@@ -56,14 +56,14 @@ export class DeliveriesController {
     }
 
     @Post('accept/:parcelId')
-    @Roles(Role.TRAVELER, Role.DELIVERY_PARTNER, Role.ADMIN)
+    @Roles(Role.TRAVELER, Role.ADMIN)
     @ApiOperation({ summary: 'Accept a parcel for delivery' })
     acceptParcel(@Param('parcelId') parcelId: string, @Request() req) {
         return this.deliveriesService.acceptParcel(parcelId, req.user.userId);
     }
 
     @Get('mine')
-    @Roles(Role.DELIVERY_PARTNER, Role.TRAVELER)
+    @Roles(Role.TRAVELER)
     @ApiOperation({ summary: 'Get current user deliveries' })
     findMine(@Request() req) {
         return this.deliveriesService.findMine(req.user.userId);

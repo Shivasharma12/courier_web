@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { Truck, Shield, Globe, Clock, Package, ArrowRight, Star, Zap, Users, MapPin, CheckCircle2, TrendingUp, ChevronRight, LayoutDashboard, Database, Activity } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import { ThemeToggle } from '@/components/theme-toggle';
 
 export default function LandingPage() {
   const [scrolled, setScrolled] = useState(false);
@@ -61,6 +62,7 @@ export default function LandingPage() {
               <Link href="/register" className="bg-primary text-primary-foreground text-sm font-semibold px-6 py-2.5 rounded-full hover:shadow-lg hover:shadow-primary/25 hover:-translate-y-0.5 transition-all">
                 Join Network
               </Link>
+              <ThemeToggle className="ml-2" />
             </div>
           </div>
         </div>
@@ -162,7 +164,7 @@ export default function LandingPage() {
               <p className="text-muted-foreground leading-relaxed mb-6">
                 Deliver your parcels faster and safer by connecting with our verified travel network. Speed, efficiency, and zero-compromise safety.
               </p>
-              <ul className="space-y-3 text-sm font-medium text-slate-700">
+              <ul className="space-y-3 text-sm font-medium text-foreground/80">
                 <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-primary" /> Express Hub Routing</li>
                 <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-primary" /> Digital Proof of Delivery</li>
                 <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-primary" /> Cost-effective Choices</li>
@@ -178,7 +180,7 @@ export default function LandingPage() {
               <p className="text-muted-foreground leading-relaxed mb-6">
                 Turn your storage space into a vital node in our global network. Manage capacity, inventory, and transfers through a unified interface.
               </p>
-              <ul className="space-y-3 text-sm font-medium text-slate-700">
+              <ul className="space-y-3 text-sm font-medium text-foreground/80">
                 <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-indigo-600" /> Automated Inventory Sync</li>
                 <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-indigo-600" /> High-volume Scalability</li>
                 <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-indigo-600" /> Infrastructure Analytics</li>
@@ -194,7 +196,7 @@ export default function LandingPage() {
               <p className="text-muted-foreground leading-relaxed mb-6">
                 One powerful dashboard to oversee everything. Track all orders, monitor hub health, and manage system users from a central management platform.
               </p>
-              <ul className="space-y-3 text-sm font-medium text-slate-700">
+              <ul className="space-y-3 text-sm font-medium text-foreground/80">
                 <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-purple-600" /> Global Order Visibility</li>
                 <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-purple-600" /> System-wide Fleet Tracking</li>
                 <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-purple-600" /> Revenue & Performance KPIs</li>
@@ -244,7 +246,7 @@ export default function LandingPage() {
       </section>
 
       {/* Footer */}
-      <footer className="pt-24 pb-12 bg-slate-950 text-white">
+      <footer className="pt-24 pb-12 bg-slate-50 dark:bg-slate-950 border-t border-border mt-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-20 text-center md:text-left">
             <div className="md:col-span-1">
@@ -252,14 +254,14 @@ export default function LandingPage() {
                 <div className="bg-primary p-2 rounded-xl">
                   <Truck className="h-5 w-5 text-primary-foreground" />
                 </div>
-                <span className="text-xl font-bold tracking-tight text-white">CourierHub</span>
+                <span className="text-xl font-bold tracking-tight text-foreground">CourierHub</span>
               </div>
-              <p className="text-sm text-slate-400 leading-relaxed">The ecosystem that connects travelers, hub owners, and management for a smarter future in logistics.</p>
+              <p className="text-sm text-muted-foreground leading-relaxed font-medium">The ecosystem that connects travelers, hub owners, and management for a smarter future in logistics.</p>
             </div>
 
             <div>
               <h5 className="font-bold text-sm mb-6 uppercase tracking-widest text-primary">Personas</h5>
-              <ul className="space-y-4 text-sm text-slate-400 font-medium">
+              <ul className="space-y-4 text-sm text-muted-foreground font-medium">
                 <li><Link href="/register" className="hover:text-primary transition-colors">Ship as Traveler</Link></li>
                 <li><Link href="/register" className="hover:text-primary transition-colors">Partner as Hub Owner</Link></li>
                 <li><Link href="/login" className="hover:text-primary transition-colors">Management Portal</Link></li>
@@ -268,7 +270,7 @@ export default function LandingPage() {
 
             <div>
               <h5 className="font-bold text-sm mb-6 uppercase tracking-widest text-primary">Support</h5>
-              <ul className="space-y-4 text-sm text-slate-400 font-medium">
+              <ul className="space-y-4 text-sm text-muted-foreground font-medium">
                 <li><Link href="#" className="hover:text-primary transition-colors">Help Center</Link></li>
                 <li><Link href="#" className="hover:text-primary transition-colors">Network Status</Link></li>
                 <li><Link href="#" className="hover:text-primary transition-colors">Contact Support</Link></li>
@@ -277,18 +279,18 @@ export default function LandingPage() {
 
             <div>
               <h5 className="font-bold text-sm mb-6 uppercase tracking-widest text-primary">Admin Access</h5>
-              <div className="p-4 bg-white/5 rounded-2xl border border-white/10">
-                <p className="text-xs text-slate-400 mb-3">Login to oversee all orders and manage hub operations.</p>
-                <Link href="/login" className="block text-center bg-white text-slate-900 text-xs font-bold py-2 rounded-lg hover:bg-slate-200 transition-colors">Go to Dashboard</Link>
+              <div className="p-4 bg-white dark:bg-white/5 rounded-2xl border border-border dark:border-white/10 shadow-sm">
+                <p className="text-xs text-muted-foreground mb-3 font-medium">Login to oversee all orders and manage hub operations.</p>
+                <Link href="/login" className="block text-center bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-xs font-bold py-2 rounded-lg hover:opacity-90 transition-all">Go to Dashboard</Link>
               </div>
             </div>
           </div>
 
-          <div className="pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
-            <p className="text-xs text-slate-500">© 2026 CourierHub Technologies, Inc. All rights reserved.</p>
-            <div className="flex gap-8 text-xs font-semibold text-slate-400">
-              <Link href="#" className="hover:text-white transition-colors">Privacy Policy</Link>
-              <Link href="#" className="hover:text-white transition-colors">Terms of Service</Link>
+          <div className="pt-12 border-t border-border flex flex-col md:flex-row justify-between items-center gap-6">
+            <p className="text-xs text-muted-foreground">© 2026 CourierHub Technologies, Inc. All rights reserved.</p>
+            <div className="flex gap-8 text-xs font-semibold text-muted-foreground">
+              <Link href="#" className="hover:text-primary transition-colors">Privacy Policy</Link>
+              <Link href="#" className="hover:text-primary transition-colors">Terms of Service</Link>
             </div>
           </div>
         </div>

@@ -59,9 +59,9 @@ export class TravelMatchingService {
 
         for (const parcel of parcels) {
             let isMatch = false;
-            let matchType: 'direct' | 'proximity' = 'direct';
+            let matchType: 'direct' | 'proximity' | 'on-the-way' = 'direct';
 
-            // 1. Exact Hub Match
+            // 1. Exact Hub Match (Start and End Hubs)
             if (travelPlan.startHub && travelPlan.endHub && parcel.currentHub && parcel.destinationHub) {
                 if (parcel.currentHub.id === travelPlan.startHub.id && parcel.destinationHub.id === travelPlan.endHub.id) {
                     isMatch = true;
@@ -69,7 +69,26 @@ export class TravelMatchingService {
                 }
             }
 
-            // 2. Flexible String Match
+            // 2. Intermediate Hub Match ("On the way")
+            // If the parcel is at a hub that is geographically between the traveler's start and end points
+            if (!isMatch && travelPlan.fromLat && travelPlan.toLat && parcel.currentHub?.lat && parcel.destinationHub?.lat) {
+                const totalRouteDist = this.calculateDistance(travelPlan.fromLat, travelPlan.fromLng, travelPlan.toLat, travelPlan.toLng);
+                const distToParcelHub = this.calculateDistance(travelPlan.fromLat, travelPlan.fromLng, parcel.currentHub.lat, parcel.currentHub.lng);
+                const distFromParcelHubToDest = this.calculateDistance(parcel.currentHub.lat, parcel.currentHub.lng, travelPlan.toLat, travelPlan.toLng);
+
+                // If picking up at this hub and going to the traveler's destination only adds 20% distance
+                // AND the parcel's destination is the traveler's destination (or near it)
+                const isParcelHubOnRoute = (distToParcelHub + distFromParcelHubToDest) < (totalRouteDist * 1.2);
+                const isDestinationMatch = parcel.destinationHub.id === travelPlan.endHub?.id ||
+                    this.calculateDistance(parcel.destinationHub.lat, parcel.destinationHub.lng, travelPlan.toLat, travelPlan.toLng) < 10;
+
+                if (isParcelHubOnRoute && isDestinationMatch) {
+                    isMatch = true;
+                    matchType = 'on-the-way';
+                }
+            }
+
+            // 3. Flexible String Match (Current fallback)
             if (!isMatch) {
                 const startMatches = isSimilar(parcel.senderAddress, travelPlan.fromLocation) || (travelPlan.startHub && parcel.currentHub?.id === travelPlan.startHub.id);
                 const endMatches = isSimilar(parcel.receiverAddress, travelPlan.toLocation) || (travelPlan.endHub && parcel.destinationHub?.id === travelPlan.endHub.id);
@@ -77,17 +96,6 @@ export class TravelMatchingService {
                 if (startMatches && endMatches) {
                     isMatch = true;
                     matchType = 'direct';
-                }
-            }
-
-            // 3. Proximity Match (Within 50km if coordinates exist)
-            if (!isMatch && travelPlan.fromLat && travelPlan.toLat && parcel.senderLat && parcel.receiverLat) {
-                const distStart = this.calculateDistance(travelPlan.fromLat, travelPlan.fromLng, parcel.senderLat, parcel.senderLng);
-                const distEnd = this.calculateDistance(travelPlan.toLat, travelPlan.toLng, parcel.receiverLat, parcel.receiverLng);
-
-                if (distStart < 50 && distEnd < 50) {
-                    isMatch = true;
-                    matchType = 'proximity';
                 }
             }
 

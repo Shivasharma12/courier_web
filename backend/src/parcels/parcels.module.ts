@@ -8,6 +8,7 @@ import { User } from '../users/entities/user.entity';
 import { RoutePlanningModule } from '../route-planning/route-planning.module';
 import { TravelPlansModule } from '../travel-plans/travel-plans.module';
 
+import { UsersModule } from '../users/users.module';
 import { TrackingModule } from '../tracking/tracking.module';
 
 @Module({
@@ -16,6 +17,7 @@ import { TrackingModule } from '../tracking/tracking.module';
         RoutePlanningModule,
         TravelPlansModule,
         TrackingModule,
+        UsersModule,
     ],
     controllers: [ParcelsController],
     providers: [ParcelsService, MatchingService],

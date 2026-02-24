@@ -1,0 +1,39 @@
+[
+  {
+    "id": "c74a2331-b2ab-42b1-92bd-10b2ea5bc06d",
+    "email": "bittu@gmail.com",
+    "name": "bittu",
+    "role": "customer",
+    "roles": [
+      "customer"
+    ]
+  },
+  {
+    "id": "eefca6f1-2d75-47b8-8173-ce9b92f7af75",
+    "email": "himu@gmail.com",
+    "name": "himanshu",
+    "role": "traveler",
+    "roles": [
+      "traveler"
+    ]
+  },
+  {
+    "id": "ada67412-8064-40cd-9587-898ad4043fe1",
+    "email": "hello@gmail.com",
+    "name": "hello",
+    "role": "customer",
+    "roles": [
+      "customer"
+    ]
+  },
+  {
+    "id": "362f051d-adf2-4ce2-ba2d-5af110bd022e",
+    "email": "new@courier.com",
+    "name": "new",
+    "role": "customer",
+    "roles": [
+      "customer",
+      "traveler"
+    ]
+  }
+]
