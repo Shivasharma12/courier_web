@@ -1,9 +1,9 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import api from '@/lib/api-client';
-import LiveMap from '@/components/live-map';
+import dynamic from 'next/dynamic';
 import { Search, Package, MapPin, Map as MapIcon, Loader2, ArrowLeft, Truck } from 'lucide-react';
 import { io } from 'socket.io-client';
 import { cn } from '@/lib/utils';
@@ -13,6 +13,15 @@ import { useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
 import { useAuthStore } from '@/store/auth-store';
 import DashboardSidebar from '@/components/dashboard-sidebar';
+
+const LiveMap = dynamic(() => import('@/components/live-map'), {
+    ssr: false,
+    loading: () => (
+        <div className="w-full h-full flex items-center justify-center bg-muted/20">
+            <Loader2 className="h-8 w-8 animate-spin text-primary/40" />
+        </div>
+    )
+});
 
 function TrackContent() {
     const { token, user } = useAuthStore();
@@ -58,7 +67,7 @@ function TrackContent() {
 
     useEffect(() => {
         if (!searchQuery || !parcel) return;
-        const socket = io('http://localhost:3001');
+        const socket = io(process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001');
         socket.emit('joinTracking', parcel.trackingNumber);
         socket.on('locationUpdated', (data) => {
             setCurrentPos({ lat: data.lat, lng: data.lng });
