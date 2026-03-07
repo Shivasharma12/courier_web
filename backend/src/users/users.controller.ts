@@ -92,6 +92,13 @@ export class UsersController {
         return this.usersService.findAll();
     }
 
+    @Get(':id')
+    @Roles(Role.ADMIN)
+    @ApiOperation({ summary: 'Get user by ID (Admin only)' })
+    findOne(@Param('id') id: string) {
+        return this.usersService.findById(id);
+    }
+
     @Patch(':id')
     @Roles(Role.ADMIN)
     @ApiOperation({ summary: 'Update user by ID (Admin only)' })

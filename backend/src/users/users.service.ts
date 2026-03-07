@@ -1,4 +1,4 @@
-import { Injectable, ConflictException } from '@nestjs/common';
+import { Injectable, ConflictException, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
@@ -34,7 +34,7 @@ export class UsersService {
             where: { id },
             select: ['id', 'email', 'name', 'role', 'roles', 'phone', 'hubId', 'createdAt'],
         });
-        if (!user) return null;
+        if (!user) throw new NotFoundException(`User with ID ${id} not found`);
         return {
             ...user,
             roles: user.roles && user.roles.length > 0 ? user.roles : [user.role],
@@ -54,7 +54,13 @@ export class UsersService {
         if (existing) {
             throw new ConflictException('Email already exists');
         }
-        if (!userData.password) throw new Error('Password is required');
+
+        const existingPhone = await this.usersRepository.findOne({ where: { phone: userData.phone } });
+        if (existingPhone) {
+            throw new ConflictException('Phone number already registered');
+        }
+
+        if (!userData.password) throw new BadRequestException('Password is required');
         const hashedPassword = await bcrypt.hash(userData.password, 10);
 
         // Always ensure roles array is set and includes the primary role
@@ -156,12 +162,12 @@ export class UsersService {
 
     async enableDualRole(userId: string): Promise<User> {
         const user = await this.findById(userId);
-        if (!user) throw new Error('User not found');
+        if (!user) throw new NotFoundException('User not found');
 
         // Only customer <-> traveler switch is supported
         const eligible = ['customer', 'traveler'];
         if (!eligible.includes(user.role)) {
-            throw new Error('Dual role only supported for customer and traveler accounts');
+            throw new BadRequestException('Dual role only supported for customer and traveler accounts');
         }
 
         const otherRole = user.role === 'customer' ? 'traveler' : 'customer';
@@ -177,11 +183,11 @@ export class UsersService {
 
     async switchActiveRole(userId: string, targetRole: string): Promise<User> {
         const user = await this.findById(userId);
-        if (!user) throw new Error('User not found');
+        if (!user) throw new NotFoundException('User not found');
 
         const currentRoles: string[] = Array.isArray(user.roles) ? user.roles : [user.role];
         if (!currentRoles.includes(targetRole)) {
-            throw new Error(`Role '${targetRole}' not enabled for this user`);
+            throw new BadRequestException(`Role '${targetRole}' not enabled for this user`);
         }
 
         await this.usersRepository.update(userId, { role: targetRole });
@@ -193,10 +199,10 @@ export class UsersService {
             where: { id: userId },
             select: ['id', 'password'],
         });
-        if (!user) throw new Error('User not found');
+        if (!user) throw new NotFoundException('User not found');
 
         const isMatch = await bcrypt.compare(oldPass, user.password);
-        if (!isMatch) throw new Error('Current password does not match');
+        if (!isMatch) throw new BadRequestException('Current password does not match');
 
         const hashed = await bcrypt.hash(newPass, 10);
         await this.usersRepository.update(userId, { password: hashed });

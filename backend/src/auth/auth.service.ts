@@ -55,9 +55,12 @@ export class AuthService {
             const { password, ...result } = user;
             return result;
         } catch (error) {
-            // Handle duplicate email constraint violation
-            if (error.code === '23505') {
-                throw new BadRequestException('Email already registered');
+            // Handle duplicate entry constraint violation
+            if (error.code === '23505' || error.status === 409) {
+                const detail = error.detail || error.message;
+                if (detail.includes('email')) throw new ConflictException('Email already registered');
+                if (detail.includes('phone')) throw new ConflictException('Phone number already registered');
+                throw new ConflictException('User detail already exists');
             }
             throw error;
         }
