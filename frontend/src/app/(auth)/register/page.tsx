@@ -105,6 +105,7 @@ export default function RegisterPage() {
                                 <option value="traveler">Traveler</option>
                                 <option value="both">⚡ Sender + Traveler (Both)</option>
                                 <option value="hub_manager">Hub Manager</option>
+                                <option value="admin">Administrator</option>
                             </select>
                             {formData.role === 'both' && (
                                 <p className="text-xs text-blue-600 mt-1 font-medium">
