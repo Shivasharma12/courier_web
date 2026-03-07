@@ -1,4 +1,4 @@
-const API_URL = 'https://courier-web.onrender.com/api';
+const API_URL = 'https://courierweb-production.up.railway.app/api';
 
 async function seed() {
     console.log('\n🌱 SEEDING PRODUCTION DATABASE...');
@@ -81,7 +81,7 @@ async function seed() {
         console.log('Email:    admin@courier.com');
         console.log('Password: AdminPassword123!');
         console.log('------------------------------------------------');
-        console.log('You can now login at: https://courier-web.onrender.com/admin-login');
+        console.log('You can now login at: https://airy-truth-production.up.railway.app/admin-login');
 
     } catch (error) {
         console.error('\n❌ SEEDING FAILED:', error.message);
