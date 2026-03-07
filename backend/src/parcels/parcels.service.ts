@@ -113,7 +113,7 @@ export class ParcelsService {
 
         await this.parcelsRepository.update(parcelId, {
             status: ParcelStatus.AT_HUB,
-            currentHub: { id: hubId } as any,
+            currentHubId: hubId,
         });
 
         await this.trackingService.createLog(
@@ -158,15 +158,15 @@ export class ParcelsService {
             await this.legRepository.update(openLeg.id, {
                 receivedAt: new Date(),
                 status: 'completed',
-                toHub: { id: hubId } as any,
+                toHubId: hubId as any,
             });
         }
 
         await this.parcelsRepository.update(parcelId, {
             status: ParcelStatus.AT_HUB,
-            currentHub: { id: hubId } as any,
-            assignedTo: null as any,
-        });
+            currentHubId: hubId,
+            assignedToId: undefined, // TypeORM treats undefined as 'no change', but we want to clear it.
+        } as any);
 
         await this.trackingService.createLog(
             { ...parcel, status: ParcelStatus.AT_HUB } as any,
@@ -510,7 +510,7 @@ export class ParcelsService {
 
     async assignTraveler(parcelId: string, travelerId: string) {
         await this.parcelsRepository.update(parcelId, {
-            assignedTo: { id: travelerId } as any,
+            assignedToId: travelerId,
         });
         const parcel = await this.parcelsRepository.findOne({
             where: { id: parcelId },

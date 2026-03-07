@@ -17,9 +17,15 @@ export class ParcelLeg {
     @JoinColumn({ name: 'parcel_id' })
     parcel: Parcel;
 
+    @Column({ name: 'from_hub_id', nullable: true })
+    fromHubId: string;
+
     @ManyToOne(() => Hub, { nullable: true })
     @JoinColumn({ name: 'from_hub_id' })
     fromHub: Hub;
+
+    @Column({ name: 'to_hub_id', nullable: true })
+    toHubId: string;
 
     @ManyToOne(() => Hub, { nullable: true })
     @JoinColumn({ name: 'to_hub_id' })

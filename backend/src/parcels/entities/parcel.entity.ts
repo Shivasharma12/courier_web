@@ -74,14 +74,23 @@ export class Parcel {
     status: string;
 
     @Index()
+    @Column({ name: 'current_hub_id', nullable: true })
+    currentHubId: string;
+
     @ManyToOne(() => Hub, { nullable: true })
     @JoinColumn({ name: 'current_hub_id' })
     currentHub: Hub;
 
     @Index()
+    @Column({ name: 'destination_hub_id', nullable: true })
+    destinationHubId: string;
+
     @ManyToOne(() => Hub)
     @JoinColumn({ name: 'destination_hub_id' })
     destinationHub: Hub;
+
+    @Column({ name: 'assigned_to_id', nullable: true })
+    assignedToId: string;
 
     @ManyToOne(() => User, { nullable: true })
     @JoinColumn({ name: 'assigned_to_id' })
