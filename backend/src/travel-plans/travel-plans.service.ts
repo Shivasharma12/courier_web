@@ -5,12 +5,15 @@ import { TravelPlan } from './entities/travel-plan.entity';
 import { TravelPlanStatus } from '../common/enums/travel-plan-status.enum';
 import { TravelMatchingService } from './travel-matching.service';
 import { NotificationsService } from '../common/notifications.service';
+import { Parcel } from '../parcels/entities/parcel.entity';
 
 @Injectable()
 export class TravelPlansService {
     constructor(
         @InjectRepository(TravelPlan)
         private travelPlanRepository: Repository<TravelPlan>,
+        @InjectRepository(Parcel)
+        private parcelRepository: Repository<Parcel>,
         private travelMatchingService: TravelMatchingService,
         private notificationsService: NotificationsService,
     ) { }
@@ -46,10 +49,28 @@ export class TravelPlansService {
     }
 
     async findAll() {
-        return this.travelPlanRepository.find({
-            relations: ['user'],
+        const plans = await this.travelPlanRepository.find({
+            relations: ['user', 'startHub', 'endHub'],
             order: { travelDate: 'ASC' }
         });
+
+        const enhancedPlans: any[] = [];
+        for (const plan of plans) {
+            let matchedParcels: Parcel[] = [];
+            if (plan.user) {
+                // Fetch parcels assigned to this traveler
+                matchedParcels = await this.parcelRepository.find({
+                    where: { assignedTo: { id: plan.user.id } },
+                    relations: ['sender', 'currentHub', 'destinationHub']
+                });
+            }
+            enhancedPlans.push({
+                ...plan,
+                matchedParcels
+            });
+        }
+
+        return enhancedPlans;
     }
 
     async findByUser(userId: string) {

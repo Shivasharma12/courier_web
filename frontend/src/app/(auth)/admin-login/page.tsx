@@ -47,29 +47,29 @@ export default function AdminLogin() {
             <div className="w-full max-w-md relative z-10">
                 {/* Admin Badge */}
                 <div className="flex justify-center mb-8">
-                    <div className="bg-blue-600 text-white px-6 py-3 rounded-2xl shadow-2xl shadow-blue-500/50 flex items-center gap-3">
+                    <div className="bg-blue-600 text-white px-6 py-3 rounded-2xl shadow-2xl shadow-blue-500/30 flex items-center gap-3">
                         <Shield className="h-6 w-6 fill-current" />
                         <span className="font-bold text-lg tracking-tight">Admin Portal</span>
                     </div>
                 </div>
 
                 {/* Login Card */}
-                <div className="bg-white rounded-3xl shadow-2xl p-8 border border-slate-100">
+                <div className="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl p-8 border border-slate-100 dark:border-slate-700">
                     <div className="text-center mb-8">
-                        <h1 className="text-3xl font-bold text-slate-900 mb-2">System Access</h1>
-                        <p className="text-slate-500 text-sm">Authorized personnel only</p>
+                        <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">System Access</h1>
+                        <p className="text-slate-500 dark:text-slate-400 text-sm">Authorized personnel only</p>
                     </div>
 
                     {error && (
-                        <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl flex items-start gap-3">
-                            <AlertCircle className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" />
-                            <p className="text-sm text-red-800">{error}</p>
+                        <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-xl flex items-start gap-3">
+                            <AlertCircle className="h-5 w-5 text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" />
+                            <p className="text-sm text-red-800 dark:text-red-300">{error}</p>
                         </div>
                     )}
 
                     <form onSubmit={handleLogin} className="space-y-6">
                         <div>
-                            <label className="block text-sm font-bold text-slate-700 mb-2">
+                            <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">
                                 Email Address
                             </label>
                             <div className="relative">
@@ -78,7 +78,7 @@ export default function AdminLogin() {
                                     type="email"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
-                                    className="w-full pl-12 pr-4 py-3.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                                    className="w-full pl-12 pr-4 py-3.5 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
                                     placeholder="admin@courier.com"
                                     required
                                 />
@@ -86,7 +86,7 @@ export default function AdminLogin() {
                         </div>
 
                         <div>
-                            <label className="block text-sm font-bold text-slate-700 mb-2">
+                            <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">
                                 Password
                             </label>
                             <div className="relative">
@@ -95,7 +95,7 @@ export default function AdminLogin() {
                                     type="password"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
-                                    className="w-full pl-12 pr-4 py-3.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                                    className="w-full pl-12 pr-4 py-3.5 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
                                     placeholder="••••••••"
                                     required
                                 />
@@ -105,7 +105,7 @@ export default function AdminLogin() {
                         <button
                             type="submit"
                             disabled={loading}
-                            className="w-full bg-blue-600 text-white py-3.5 rounded-xl font-bold hover:bg-blue-700 transition-all shadow-lg shadow-blue-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                            className="w-full bg-blue-600 text-white py-3.5 rounded-xl font-bold hover:bg-blue-700 transition-all shadow-lg shadow-blue-500/20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                         >
                             {loading ? (
                                 <>
@@ -121,8 +121,8 @@ export default function AdminLogin() {
                         </button>
                     </form>
 
-                    <div className="mt-8 pt-6 border-t border-slate-100">
-                        <p className="text-xs text-slate-400 text-center">
+                    <div className="mt-8 pt-6 border-t border-slate-100 dark:border-slate-700">
+                        <p className="text-xs text-slate-400 dark:text-slate-500 text-center">
                             This is a restricted area. All access attempts are logged and monitored.
                         </p>
                     </div>

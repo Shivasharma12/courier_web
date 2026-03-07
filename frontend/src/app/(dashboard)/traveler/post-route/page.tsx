@@ -128,6 +128,7 @@ export default function PostRoutePage() {
                 ...hub,
                 distance: calculateDistance(lat, lng, hub.lat, hub.lng)
             }))
+            .filter(hub => hub.distance <= 50)
             .sort((a, b) => a.distance - b.distance);
     };
 
@@ -201,7 +202,7 @@ export default function PostRoutePage() {
                             {userCoords && (
                                 <div className="space-y-2">
                                     <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">
-                                        Select Starting Hub
+                                        Select Starting Hub ({sortedHubsByDistance(userCoords.lat, userCoords.lng).length} within 50km)
                                     </label>
                                     <select
                                         className="w-full bg-muted/30 border border-border rounded-2xl px-4 py-3 text-sm font-bold text-foreground focus:ring-2 focus:ring-blue-500 outline-none transition-all"
@@ -215,6 +216,11 @@ export default function PostRoutePage() {
                                             </option>
                                         ))}
                                     </select>
+                                    {sortedHubsByDistance(userCoords.lat, userCoords.lng).length === 0 && (
+                                        <p className="text-[10px] text-red-500 font-bold px-1 animate-pulse">
+                                            No hubs within 50km. Try a different location.
+                                        </p>
+                                    )}
                                 </div>
                             )}
                         </div>
@@ -237,7 +243,7 @@ export default function PostRoutePage() {
                             {formData.toLat > 0 && (
                                 <div className="space-y-2">
                                     <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">
-                                        Select Destination Hub
+                                        Select Destination Hub ({sortedHubsByDistance(formData.toLat, formData.toLng).length} within 50km)
                                     </label>
                                     <select
                                         className="w-full bg-muted/30 border border-border rounded-2xl px-4 py-3 text-sm font-bold text-foreground focus:ring-2 focus:ring-blue-500 outline-none transition-all"
@@ -251,6 +257,11 @@ export default function PostRoutePage() {
                                             </option>
                                         ))}
                                     </select>
+                                    {sortedHubsByDistance(formData.toLat, formData.toLng).length === 0 && (
+                                        <p className="text-[10px] text-red-500 font-bold px-1 animate-pulse">
+                                            No hubs within 50km. Try a different location.
+                                        </p>
+                                    )}
                                 </div>
                             )}
                         </div>

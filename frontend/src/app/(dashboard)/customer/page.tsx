@@ -69,7 +69,14 @@ export default function CustomerDashboard() {
                         <tbody className="divide-y divide-border">
                             {parcels?.slice(0, 5).map((parcel: any) => (
                                 <tr key={parcel.id} className="hover:bg-muted/30 transition-colors">
-                                    <td className="px-6 py-4 font-mono text-sm text-blue-600 dark:text-blue-400 font-medium">#{parcel.trackingNumber}</td>
+                                    <td className="px-6 py-4 font-mono text-sm">
+                                        <Link
+                                            href={`/track?number=${parcel.trackingNumber}`}
+                                            className="text-blue-600 dark:text-blue-400 font-medium hover:underline"
+                                        >
+                                            #{parcel.trackingNumber}
+                                        </Link>
+                                    </td>
                                     <td className="px-6 py-4 text-sm text-foreground font-medium">{parcel.receiverName}</td>
                                     <td className="px-6 py-4 text-sm text-muted-foreground truncate max-w-[200px]">{parcel.receiverAddress}</td>
                                     <td className="px-6 py-4">

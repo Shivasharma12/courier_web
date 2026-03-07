@@ -72,6 +72,7 @@ export class HubsController {
     }))
     async uploadHubMedia(@Request() req, @UploadedFiles() files: { shopPhoto?: Express.Multer.File[], documents?: Express.Multer.File[] }) {
         const hubId = await this.getManagerHubId(req.user);
+        if (!hubId) throw new BadRequestException('User is not assigned to a hub.');
         const apiBase = process.env.API_BASE_URL || 'http://localhost:3001/api';
 
         const shopPhotoUrl = files.shopPhoto?.[0]
@@ -136,7 +137,7 @@ export class HubsController {
         return this.hubsService.findAll();
     }
 
-    private async getManagerHubId(user: any): Promise<string> {
+    private async getManagerHubId(user: any): Promise<string | null> {
         let hubId = user.hubId;
 
         // Fallback: If hubId is missing in token (stale session), fetch it from DB
@@ -145,11 +146,7 @@ export class HubsController {
             hubId = userData?.hubId;
         }
 
-        if (!hubId) {
-            throw new BadRequestException('User is not assigned to a hub.');
-        }
-
-        return hubId;
+        return hubId || null;
     }
 
     @Get('nearby')
@@ -165,11 +162,12 @@ export class HubsController {
         let hubId = explicitHubId;
 
         if (!hubId) {
-            hubId = await this.getManagerHubId(req.user);
+            hubId = (await this.getManagerHubId(req.user)) || undefined;
         }
 
+        if (!hubId) return null;
+
         const stats = await this.hubsService.getStats(hubId);
-        if (!stats) throw new NotFoundException('Assigned hub not found.');
         return stats;
     }
 
@@ -178,6 +176,7 @@ export class HubsController {
     @ApiOperation({ summary: 'Submit an update request for manager\'s own hub' })
     async updateMyHub(@Request() req, @Body() data: any) {
         const hubId = await this.getManagerHubId(req.user);
+        if (!hubId) throw new BadRequestException('User is not assigned to a hub.');
 
         // Submit request to track changes
         await this.hubsService.submitHubRequest(hubId, req.user.id, {

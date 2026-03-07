@@ -75,13 +75,15 @@ export default function CustomerHistory() {
                                     <td className="px-8 py-6">
                                         <span className={cn(
                                             "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-tighter",
-                                            parcel.status === 'delivered' ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400" :
-                                                parcel.status === 'in_transit' ? "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400" :
-                                                    parcel.status === 'at_hub' ? "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400" :
-                                                        parcel.status === 'out_for_delivery' ? "bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400" :
-                                                            parcel.status === 'matched' ? "bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400 border border-purple-200 dark:border-purple-800 animate-pulse" :
-                                                                parcel.status === 'booked' ? "bg-blue-600 text-white shadow-md shadow-blue-100/20" :
-                                                                    "bg-muted text-muted-foreground"
+                                            parcel.status === 'waiting_for_drop' ? "bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400 border border-yellow-200 dark:border-yellow-900/40 animate-pulse" :
+                                                parcel.status === 'delivered' ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400" :
+                                                    parcel.status === 'in_transit' ? "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400" :
+                                                        parcel.status === 'at_hub' ? "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400" :
+                                                            parcel.status === 'out_for_delivery' ? "bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400" :
+                                                                parcel.status === 'matched' ? "bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400 border border-purple-200 dark:border-purple-800 animate-pulse" :
+                                                                    parcel.status === 'booked' ? "bg-blue-600 text-white shadow-md shadow-blue-500/10" :
+                                                                        parcel.status === 'expired' ? "bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 line-through" :
+                                                                            "bg-muted text-muted-foreground"
                                         )}>
                                             {parcel.status === 'matched' && <Clock className="h-3 w-3" />}
                                             {parcel.status === 'delivered' && <CheckCircle className="h-3 w-3" />}
@@ -107,7 +109,7 @@ export default function CustomerHistory() {
                                         )}
                                         {/* Track button — always visible */}
                                         <Link
-                                            href={`/customer/track?tracking=${parcel.trackingNumber}`}
+                                            href={`/track?number=${parcel.trackingNumber}`}
                                             className="flex items-center gap-1.5 text-[10px] font-black text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 uppercase tracking-wider ml-auto"
                                         >
                                             <ExternalLink className="h-3 w-3" /> Track

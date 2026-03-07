@@ -10,8 +10,10 @@ import { TrackingService } from '../tracking/tracking.service';
 
 export interface MatchedParcel {
     parcel: Parcel;
-    matchType: 'direct';
+    matchType: 'direct' | 'on-the-way' | 'proximity';
     travelPlan: TravelPlan;
+    pickupHubDistance?: number;
+    deliveryHubDistance?: number;
 }
 
 const isSimilar = (a: string, b: string) => {
@@ -60,6 +62,16 @@ export class TravelMatchingService {
         for (const parcel of parcels) {
             let isMatch = false;
             let matchType: 'direct' | 'proximity' | 'on-the-way' = 'direct';
+            let pickupHubDistance: number | undefined;
+            let deliveryHubDistance: number | undefined;
+
+            // Calculate base distances if coords are available
+            if (travelPlan.fromLat && travelPlan.fromLng && parcel.currentHub?.lat && parcel.currentHub?.lng) {
+                pickupHubDistance = this.calculateDistance(travelPlan.fromLat, travelPlan.fromLng, parcel.currentHub.lat, parcel.currentHub.lng);
+            }
+            if (travelPlan.toLat && travelPlan.toLng && parcel.destinationHub?.lat && parcel.destinationHub?.lng) {
+                deliveryHubDistance = this.calculateDistance(travelPlan.toLat, travelPlan.toLng, parcel.destinationHub.lat, parcel.destinationHub.lng);
+            }
 
             // 1. Exact Hub Match (Start and End Hubs)
             if (travelPlan.startHub && travelPlan.endHub && parcel.currentHub && parcel.destinationHub) {
@@ -103,7 +115,9 @@ export class TravelMatchingService {
                 matches.push({
                     parcel,
                     matchType: matchType as any,
-                    travelPlan
+                    travelPlan,
+                    pickupHubDistance,
+                    deliveryHubDistance
                 });
             }
         }

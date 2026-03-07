@@ -84,7 +84,7 @@ export default function DispatchPage() {
                     <div className="p-4 bg-amber-100 dark:bg-amber-900/30 rounded-full"><MapPin className="h-10 w-10 text-amber-600 dark:text-amber-400" /></div>
                     <h2 className="text-2xl font-black text-amber-900 dark:text-amber-200">Queue Unavailable</h2>
                     <p className="text-amber-700 dark:text-amber-300 font-medium">You must be assigned to a hub to manage dispatch.</p>
-                    <a href="/hub/profile" className="bg-blue-600 text-white font-bold px-8 py-4 rounded-2xl flex items-center gap-2 shadow-lg shadow-blue-100/20">
+                    <a href="/hub/profile" className="bg-blue-600 text-white font-bold px-8 py-4 rounded-2xl flex items-center gap-2 shadow-lg shadow-blue-500/20">
                         Set Up Your Hub <ArrowRight className="h-5 w-5" />
                     </a>
                 </div>

@@ -40,7 +40,7 @@ export default function ImageUpload({ onImagesChange, maxImages = 3 }: ImageUplo
         <div className="space-y-4">
             <div className="grid grid-cols-3 gap-4">
                 {images.map((url, index) => (
-                    <div key={index} className="relative aspect-square rounded-xl overflow-hidden border border-slate-200 bg-slate-50 group">
+                    <div key={index} className="relative aspect-square rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 group">
                         <img src={url} alt={`Parcel ${index + 1}`} className="w-full h-full object-cover" />
                         <button
                             type="button"
@@ -56,7 +56,7 @@ export default function ImageUpload({ onImagesChange, maxImages = 3 }: ImageUplo
                     <button
                         type="button"
                         onClick={() => fileInputRef.current?.click()}
-                        className="aspect-square rounded-xl border-2 border-dashed border-slate-200 bg-slate-50 flex flex-col items-center justify-center gap-2 text-slate-400 hover:border-blue-400 hover:bg-blue-50 hover:text-blue-500 transition-all"
+                        className="aspect-square rounded-xl border-2 border-dashed border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 flex flex-col items-center justify-center gap-2 text-slate-400 dark:text-slate-500 hover:border-blue-400 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-500 dark:hover:text-blue-400 transition-all"
                     >
                         <Camera className="h-6 w-6" />
                         <span className="text-xs font-medium">Add Photo</span>
@@ -73,7 +73,7 @@ export default function ImageUpload({ onImagesChange, maxImages = 3 }: ImageUplo
                 onChange={handleFileChange}
             />
 
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-muted-foreground font-medium">
                 Upload up to {maxImages} photos of your parcel.
             </p>
         </div>

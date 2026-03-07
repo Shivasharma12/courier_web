@@ -51,43 +51,43 @@ export default function LoginPage() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-slate-50 p-4">
-            <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-2xl shadow-xl border border-slate-100">
+        <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950 p-4">
+            <div className="max-w-md w-full space-y-8 bg-white dark:bg-slate-900 p-8 rounded-2xl shadow-xl border border-slate-100 dark:border-slate-700">
                 <div className="text-center">
                     <div className="flex justify-center">
-                        <div className="bg-blue-600 p-3 rounded-xl shadow-lg shadow-blue-200">
+                        <div className="bg-blue-600 p-3 rounded-xl shadow-lg shadow-blue-500/30">
                             <Package2 className="h-8 w-8 text-white" />
                         </div>
                     </div>
-                    <h2 className="mt-6 text-3xl font-extrabold text-slate-900 tracking-tight">Welcome Back</h2>
-                    <p className="mt-2 text-sm text-slate-500">Sign in to your account</p>
+                    <h2 className="mt-6 text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">Welcome Back</h2>
+                    <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">Sign in to your account</p>
                 </div>
 
                 <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
                     {error && (
-                        <div className="bg-red-50 text-red-600 text-sm p-3 rounded-lg border border-red-100">
+                        <div className="bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 text-sm p-3 rounded-lg border border-red-100 dark:border-red-800">
                             {error}
                         </div>
                     )}
                     <div className="space-y-4">
                         <div>
-                            <label className="text-sm font-medium text-slate-700 block mb-1">Email Address</label>
+                            <label className="text-sm font-medium text-slate-700 dark:text-slate-300 block mb-1">Email Address</label>
                             <input
                                 type="email"
                                 required
                                 autoComplete="email"
-                                className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                                className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
                                 placeholder="name@company.com"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                             />
                         </div>
                         <div>
-                            <label className="text-sm font-medium text-slate-700 block mb-1">Password</label>
+                            <label className="text-sm font-medium text-slate-700 dark:text-slate-300 block mb-1">Password</label>
                             <input
                                 type="password"
                                 required
-                                className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                                className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
                                 placeholder="••••••••"
                                 autoComplete="current-password"
                                 value={password}
@@ -99,13 +99,13 @@ export default function LoginPage() {
                     <button
                         type="submit"
                         disabled={loading}
-                        className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-xl transition-all shadow-lg shadow-blue-200 flex items-center justify-center disabled:opacity-70 disabled:cursor-not-allowed"
+                        className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-xl transition-all shadow-lg shadow-blue-500/20 flex items-center justify-center disabled:opacity-70 disabled:cursor-not-allowed"
                     >
                         {loading ? <Loader2 className="h-5 w-5 animate-spin mr-2" /> : null}
                         Sign In
                     </button>
 
-                    <p className="text-center text-sm text-slate-600">
+                    <p className="text-center text-sm text-slate-600 dark:text-slate-400">
                         Don't have an account?{' '}
                         <a href="/register" className="font-medium text-blue-600 hover:text-blue-500 underline underline-offset-4">
                             Register now

@@ -42,62 +42,62 @@ export default function RegisterPage() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-slate-50 p-4 py-12">
-            <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-2xl shadow-xl border border-slate-100">
+        <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950 p-4 py-12">
+            <div className="max-w-md w-full space-y-8 bg-white dark:bg-slate-900 p-8 rounded-2xl shadow-xl border border-slate-100 dark:border-slate-700">
                 <div className="text-center">
                     <div className="flex justify-center">
-                        <div className="bg-blue-600 p-3 rounded-xl shadow-lg shadow-blue-200">
+                        <div className="bg-blue-600 p-3 rounded-xl shadow-lg shadow-blue-500/30">
                             <Package2 className="h-8 w-8 text-white" />
                         </div>
                     </div>
-                    <h2 className="mt-6 text-3xl font-extrabold text-slate-900 tracking-tight">Create Account</h2>
-                    <p className="mt-2 text-sm text-slate-500">Join our delivery network</p>
+                    <h2 className="mt-6 text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">Create Account</h2>
+                    <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">Join our delivery network</p>
                 </div>
 
                 <form className="mt-8 space-y-5" onSubmit={handleSubmit}>
                     {error && (
-                        <div className="bg-red-50 text-red-600 text-sm p-3 rounded-lg border border-red-100">
+                        <div className="bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 text-sm p-3 rounded-lg border border-red-100 dark:border-red-800">
                             {error}
                         </div>
                     )}
                     <div className="space-y-4">
                         <div>
-                            <label className="text-sm font-medium text-slate-700 block mb-1">Full Name</label>
+                            <label className="text-sm font-medium text-slate-700 dark:text-slate-300 block mb-1">Full Name</label>
                             <input
                                 type="text"
                                 required
-                                className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                                className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
                                 placeholder="John Doe"
                                 value={formData.name}
                                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                             />
                         </div>
                         <div>
-                            <label className="text-sm font-medium text-slate-700 block mb-1">Email Address</label>
+                            <label className="text-sm font-medium text-slate-700 dark:text-slate-300 block mb-1">Email Address</label>
                             <input
                                 type="email"
                                 required
-                                className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                                className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
                                 placeholder="name@company.com"
                                 value={formData.email}
                                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                             />
                         </div>
                         <div>
-                            <label className="text-sm font-medium text-slate-700 block mb-1">Phone Number</label>
+                            <label className="text-sm font-medium text-slate-700 dark:text-slate-300 block mb-1">Phone Number</label>
                             <input
                                 type="tel"
                                 required
-                                className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                                className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
                                 placeholder="+1 234 567 890"
                                 value={formData.phone}
                                 onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                             />
                         </div>
                         <div>
-                            <label className="text-sm font-medium text-slate-700 block mb-1">Choose Your Role</label>
+                            <label className="text-sm font-medium text-slate-700 dark:text-slate-300 block mb-1">Choose Your Role</label>
                             <select
-                                className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all bg-white font-medium"
+                                className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all font-medium"
                                 value={formData.role}
                                 onChange={(e) => setFormData({ ...formData, role: e.target.value })}
                             >
@@ -113,11 +113,11 @@ export default function RegisterPage() {
                             )}
                         </div>
                         <div>
-                            <label className="text-sm font-medium text-slate-700 block mb-1">Password</label>
+                            <label className="text-sm font-medium text-slate-700 dark:text-slate-300 block mb-1">Password</label>
                             <input
                                 type="password"
                                 required
-                                className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                                className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
                                 placeholder="••••••••"
                                 autoComplete="new-password"
                                 value={formData.password}
@@ -129,13 +129,13 @@ export default function RegisterPage() {
                     <button
                         type="submit"
                         disabled={loading}
-                        className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-xl transition-all shadow-lg shadow-blue-200 flex items-center justify-center disabled:opacity-70 disabled:cursor-not-allowed mt-4"
+                        className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-xl transition-all shadow-lg shadow-blue-500/20 flex items-center justify-center disabled:opacity-70 disabled:cursor-not-allowed mt-4"
                     >
                         {loading ? <Loader2 className="h-5 w-5 animate-spin mr-2" /> : null}
                         Create Account
                     </button>
 
-                    <p className="text-center text-sm text-slate-600">
+                    <p className="text-center text-sm text-slate-600 dark:text-slate-400">
                         Already have an account?{' '}
                         <a href="/login" className="font-medium text-blue-600 hover:text-blue-500 underline underline-offset-4">
                             Sign in

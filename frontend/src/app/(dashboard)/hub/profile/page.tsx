@@ -357,7 +357,7 @@ export default function HubProfilePage() {
                     {isUnassigned ? (
                         <button
                             type="submit" disabled={createMutation.isPending}
-                            className="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white font-bold py-4 rounded-2xl shadow-lg shadow-blue-100 transition-all flex items-center justify-center gap-2"
+                            className="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white font-bold py-4 rounded-2xl shadow-lg shadow-blue-500/20 transition-all flex items-center justify-center gap-2"
                         >
                             {createMutation.isPending ? <Loader2 className="h-5 w-5 animate-spin" /> : null}
                             Continue to Documents →
@@ -366,7 +366,7 @@ export default function HubProfilePage() {
                         <div className="flex gap-3">
                             <button
                                 type="submit"
-                                className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-2xl shadow-lg shadow-blue-100 transition-all flex items-center justify-center gap-2"
+                                className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-2xl shadow-lg shadow-blue-500/20 transition-all flex items-center justify-center gap-2"
                                 onClick={() => setStep(2)}
                             >
                                 Update Details & Upload Docs →

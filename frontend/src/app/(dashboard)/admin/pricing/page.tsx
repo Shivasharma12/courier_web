@@ -20,22 +20,22 @@ export default function PricingRulesPage() {
     return (
         <div className="space-y-8">
             <div>
-                <h1 className="text-3xl font-bold text-slate-900">Pricing Configuration</h1>
-                <p className="text-slate-500 mt-1">Define global pricing strategies based on weight, distance, and priority.</p>
+                <h1 className="text-3xl font-bold text-slate-900 dark:text-white">Pricing Configuration</h1>
+                <p className="text-slate-500 dark:text-slate-400 mt-1">Define global pricing strategies based on weight, distance, and priority.</p>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 space-y-6">
-                    <h3 className="text-xl font-bold text-slate-900 flex items-center gap-2">
+                <div className="bg-white dark:bg-slate-800 p-8 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700 space-y-6">
+                    <h3 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
                         <DollarSign className="h-5 w-5 text-blue-600" /> Standard Rates
                     </h3>
 
                     <div className="space-y-4">
                         <div>
-                            <label className="text-sm font-bold text-slate-700 block mb-2 uppercase tracking-wide">Base Delivery Fee ($)</label>
+                            <label className="text-sm font-bold text-slate-700 dark:text-slate-300 block mb-2 uppercase tracking-wide">Base Delivery Fee ($)</label>
                             <input
                                 type="number"
-                                className="w-full px-6 py-4 rounded-2xl bg-slate-50 border-none focus:ring-2 focus:ring-blue-600 text-lg font-bold outline-none"
+                                className="w-full px-6 py-4 rounded-2xl bg-slate-50 dark:bg-slate-700 border-none focus:ring-2 focus:ring-blue-600 text-lg font-bold text-slate-900 dark:text-white outline-none"
                                 value={isNaN(rules.basePrice) ? '' : rules.basePrice}
                                 onChange={(e) => {
                                     const val = parseFloat(e.target.value);
@@ -44,10 +44,10 @@ export default function PricingRulesPage() {
                             />
                         </div>
                         <div>
-                            <label className="text-sm font-bold text-slate-700 block mb-2 uppercase tracking-wide">Rate per Kilogram ($/kg)</label>
+                            <label className="text-sm font-bold text-slate-700 dark:text-slate-300 block mb-2 uppercase tracking-wide">Rate per Kilogram ($/kg)</label>
                             <input
                                 type="number"
-                                className="w-full px-6 py-4 rounded-2xl bg-slate-50 border-none focus:ring-2 focus:ring-blue-600 text-lg font-bold outline-none"
+                                className="w-full px-6 py-4 rounded-2xl bg-slate-50 dark:bg-slate-700 border-none focus:ring-2 focus:ring-blue-600 text-lg font-bold text-slate-900 dark:text-white outline-none"
                                 value={isNaN(rules.perKg) ? '' : rules.perKg}
                                 onChange={(e) => {
                                     const val = parseFloat(e.target.value);
@@ -57,9 +57,9 @@ export default function PricingRulesPage() {
                         </div>
                     </div>
 
-                    <div className="p-6 bg-blue-50/50 rounded-2xl border border-blue-100 flex gap-4">
+                    <div className="p-6 bg-blue-50/50 dark:bg-blue-900/20 rounded-2xl border border-blue-100 dark:border-blue-800/50 flex gap-4">
                         <Info className="h-6 w-6 text-blue-600 flex-shrink-0" />
-                        <p className="text-sm text-blue-700 leading-relaxed">
+                        <p className="text-sm text-blue-700 dark:text-blue-300 leading-relaxed">
                             Base fee applies to all orders. Weight charges are calculated per 100g. Prices are automatically updated for all customers in real-time.
                         </p>
                     </div>
@@ -75,16 +75,16 @@ export default function PricingRulesPage() {
                 </div>
 
                 <div className="space-y-6">
-                    <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-                        <h4 className="font-bold text-slate-900 mb-4">Price Preview</h4>
+                    <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                        <h4 className="font-bold text-slate-900 dark:text-white mb-4">Price Preview</h4>
                         <div className="space-y-4">
-                            <div className="flex justify-between items-center p-4 bg-slate-50 rounded-xl">
-                                <span className="text-sm text-slate-500 font-medium">Small Parcel (0.5kg)</span>
-                                <span className="text-lg font-bold text-slate-900">${(rules.basePrice + (0.5 * rules.perKg)).toFixed(2)}</span>
+                            <div className="flex justify-between items-center p-4 bg-slate-50 dark:bg-slate-700/50 rounded-xl">
+                                <span className="text-sm text-slate-500 dark:text-slate-400 font-medium">Small Parcel (0.5kg)</span>
+                                <span className="text-lg font-bold text-slate-900 dark:text-white">${(rules.basePrice + (0.5 * rules.perKg)).toFixed(2)}</span>
                             </div>
-                            <div className="flex justify-between items-center p-4 bg-slate-50 rounded-xl">
-                                <span className="text-sm text-slate-500 font-medium">Medium Parcel (2.5kg)</span>
-                                <span className="text-lg font-bold text-slate-900">${(rules.basePrice + (2.5 * rules.perKg)).toFixed(2)}</span>
+                            <div className="flex justify-between items-center p-4 bg-slate-50 dark:bg-slate-700/50 rounded-xl">
+                                <span className="text-sm text-slate-500 dark:text-slate-400 font-medium">Medium Parcel (2.5kg)</span>
+                                <span className="text-lg font-bold text-slate-900 dark:text-white">${(rules.basePrice + (2.5 * rules.perKg)).toFixed(2)}</span>
                             </div>
                             <div className="flex justify-between items-center p-4 bg-slate-50 rounded-xl border-2 border-blue-600">
                                 <span className="text-sm text-blue-600 font-bold">Priority Delivery (x{rules.priorityMultiplier})</span>

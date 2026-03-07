@@ -91,7 +91,7 @@ export default function LandingPage() {
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 mb-12">
-                <Link href="/register" className="group bg-primary text-primary-foreground px-8 py-4 rounded-full font-bold text-lg shadow-xl shadow-primary/20 hover:shadow-2xl hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2">
+                <Link href="/customer/create" className="group bg-primary text-primary-foreground px-8 py-4 rounded-full font-bold text-lg shadow-xl shadow-primary/20 hover:shadow-2xl hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2">
                   Ship a Parcel
                   <ChevronRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
                 </Link>
@@ -262,7 +262,7 @@ export default function LandingPage() {
             <div>
               <h5 className="font-bold text-sm mb-6 uppercase tracking-widest text-primary">Personas</h5>
               <ul className="space-y-4 text-sm text-muted-foreground font-medium">
-                <li><Link href="/register" className="hover:text-primary transition-colors">Ship as Traveler</Link></li>
+                <li><Link href="/customer/create" className="hover:text-primary transition-colors">Start Shipping</Link></li>
                 <li><Link href="/register" className="hover:text-primary transition-colors">Partner as Hub Owner</Link></li>
                 <li><Link href="/login" className="hover:text-primary transition-colors">Management Portal</Link></li>
               </ul>

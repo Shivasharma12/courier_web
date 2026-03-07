@@ -41,12 +41,12 @@ export default function HubManagementPage() {
         <div className="space-y-8">
             <div className="flex justify-between items-end">
                 <div>
-                    <h1 className="text-3xl font-bold text-slate-900">Hub Network</h1>
-                    <p className="text-slate-500 mt-1">Configure your distribution nodes and routing hubs.</p>
+                    <h1 className="text-3xl font-bold text-slate-900 dark:text-white">Hub Network</h1>
+                    <p className="text-slate-500 dark:text-slate-400 mt-1">Configure your distribution nodes and routing hubs.</p>
                 </div>
                 <button
                     onClick={() => setShowAddForm(!showAddForm)}
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-semibold shadow-lg shadow-blue-200 flex items-center gap-2 transition-all"
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-semibold shadow-lg shadow-blue-500/20 flex items-center gap-2 transition-all"
                 >
                     <Plus className="h-5 w-5" />
                     {showAddForm ? 'Cancel' : 'Register New Hub'}
@@ -54,15 +54,15 @@ export default function HubManagementPage() {
             </div>
 
             {showAddForm && (
-                <div className="bg-white p-8 rounded-2xl shadow-xl border border-blue-100 animate-in fade-in slide-in-from-top-4 duration-300">
-                    <h3 className="text-xl font-bold text-slate-900 mb-6">Register New Delivery Hub</h3>
+                <div className="bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-xl border border-blue-100 dark:border-slate-700 animate-in fade-in slide-in-from-top-4 duration-300">
+                    <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-6">Register New Delivery Hub</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                         <div>
-                            <label className="text-sm font-medium text-slate-700 block mb-1">Hub Name</label>
+                            <label className="text-sm font-medium text-slate-700 dark:text-slate-300 block mb-1">Hub Name</label>
                             <input
                                 type="text"
                                 placeholder="e.g. Central Logistics - New York"
-                                className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                                className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
                                 value={newHub.name}
                                 onChange={(e) => setNewHub({ ...newHub, name: e.target.value })}
                             />
@@ -78,7 +78,7 @@ export default function HubManagementPage() {
                     <button
                         disabled={!newHub.name || !newHub.address || createMutation.isPending}
                         onClick={() => createMutation.mutate(newHub)}
-                        className="w-full bg-blue-600 text-white py-4 rounded-xl font-bold shadow-lg shadow-blue-200 disabled:opacity-50 flex items-center justify-center gap-2"
+                        className="w-full bg-blue-600 text-white py-4 rounded-xl font-bold shadow-lg shadow-blue-500/20 disabled:opacity-50 flex items-center justify-center gap-2"
                     >
                         {createMutation.isPending ? <Loader2 className="h-5 w-5 animate-spin" /> : <Globe className="h-5 w-5" />}
                         Initialize Hub
@@ -88,7 +88,7 @@ export default function HubManagementPage() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {hubs?.map((hub: any) => (
-                    <div key={hub.id} className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:border-blue-200 transition-all group">
+                    <div key={hub.id} className="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 hover:border-blue-200 dark:hover:border-blue-600 transition-all group">
                         <div className="flex justify-between items-start mb-4">
                             <div className="bg-blue-50 p-3 rounded-xl text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-all">
                                 <Navigation className="h-6 w-6" />
@@ -105,13 +105,13 @@ export default function HubManagementPage() {
                                 </button>
                             </div>
                         </div>
-                        <h3 className="font-bold text-slate-900 text-lg mb-1">{hub.name}</h3>
-                        <div className="flex items-start gap-2 text-sm text-slate-500">
+                        <h3 className="font-bold text-slate-900 dark:text-white text-lg mb-1">{hub.name}</h3>
+                        <div className="flex items-start gap-2 text-sm text-slate-500 dark:text-slate-400">
                             <MapPin className="h-4 w-4 mt-0.5 flex-shrink-0 text-slate-400" />
                             <p className="line-clamp-2">{hub.address}</p>
                         </div>
-                        <div className="mt-4 pt-4 border-t border-slate-50 flex justify-between items-center">
-                            <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Active Status</span>
+                        <div className="mt-4 pt-4 border-t border-slate-100 dark:border-slate-700 flex justify-between items-center">
+                            <span className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">Active Status</span>
                             <div className="flex items-center gap-1.5">
                                 <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                                 <span className="text-xs font-bold text-green-600 uppercase">Online</span>

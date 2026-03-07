@@ -70,7 +70,7 @@ export class Parcel {
     @Column('float')
     price: number;
 
-    @Column({ default: ParcelStatus.PENDING_MATCH })
+    @Column({ default: ParcelStatus.WAITING_FOR_DROP })
     status: string;
 
     @Index()
@@ -89,6 +89,12 @@ export class Parcel {
 
     @Column({ nullable: true })
     estimatedDeliveryDate: Date;
+
+    @Column({ nullable: true })
+    dropDeadline: Date; // 48h after creation; parcel expires if not dropped
+
+    @Column({ nullable: true })
+    dispatchedAt: Date; // set when hub dispatches to traveler
 
     @Column({ nullable: true })
     actualDeliveryDate: Date;

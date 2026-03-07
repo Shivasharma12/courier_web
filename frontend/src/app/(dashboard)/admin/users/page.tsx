@@ -37,6 +37,7 @@ interface User {
     roles?: string[];
     createdAt: string;
     hubId?: string;
+    hub?: { name: string; address: string };
 }
 
 export default function AdminUsersPage() {
@@ -159,12 +160,12 @@ export default function AdminUsersPage() {
             {/* Header */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
                 <div>
-                    <h1 className="text-3xl font-bold text-slate-900 tracking-tight">User Management</h1>
-                    <p className="text-slate-500 mt-1">Manage all platform users and their roles</p>
+                    <h1 className="text-3xl font-bold text-slate-900 dark:text-white tracking-tight">User Management</h1>
+                    <p className="text-slate-500 dark:text-slate-400 mt-1">Manage all platform users and their roles</p>
                 </div>
                 <button
                     onClick={() => setShowCreateModal(true)}
-                    className="bg-blue-600 text-white px-5 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 hover:bg-blue-700 transition-all shadow-lg shadow-blue-200"
+                    className="bg-blue-600 text-white px-5 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 hover:bg-blue-700 transition-all shadow-lg shadow-blue-500/20"
                 >
                     <UserPlus className="h-4 w-4" /> Create User
                 </button>
@@ -181,8 +182,8 @@ export default function AdminUsersPage() {
                             className={cn(
                                 "p-4 rounded-xl border-2 transition-all text-left",
                                 selectedRole === filter.value
-                                    ? "bg-blue-50 border-blue-500 shadow-lg shadow-blue-100"
-                                    : "bg-white border-slate-200 hover:border-slate-300"
+                                    ? "bg-blue-50 dark:bg-blue-900/30 border-blue-500 shadow-lg shadow-blue-500/10"
+                                    : "bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600"
                             )}
                         >
                             <div className="flex items-center gap-2 mb-2">
@@ -197,14 +198,14 @@ export default function AdminUsersPage() {
                                     {filter.label}
                                 </span>
                             </div>
-                            <p className="text-2xl font-bold text-slate-900">{filter.count}</p>
+                            <p className="text-2xl font-bold text-slate-900 dark:text-white">{filter.count}</p>
                         </button>
                     );
                 })}
             </div>
 
             {/* Search Bar */}
-            <div className="bg-white p-4 rounded-xl border border-slate-200">
+            <div className="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700">
                 <div className="relative">
                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
                     <input
@@ -212,13 +213,13 @@ export default function AdminUsersPage() {
                         placeholder="Search by name, email, or phone..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full pl-12 pr-4 py-3 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                        className="w-full pl-12 pr-4 py-3 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
                     />
                 </div>
             </div>
 
             {/* Users Table */}
-            <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+            <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
                 {isLoading ? (
                     <div className="flex items-center justify-center py-20">
                         <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
@@ -231,36 +232,36 @@ export default function AdminUsersPage() {
                 ) : (
                     <div className="overflow-x-auto">
                         <table className="w-full">
-                            <thead className="bg-slate-50 border-b border-slate-200">
+                            <thead className="bg-slate-50 dark:bg-slate-700/50 border-b border-slate-200 dark:border-slate-700">
                                 <tr>
-                                    <th className="px-6 py-4 text-left text-xs font-bold text-slate-600 uppercase tracking-wider">User</th>
-                                    <th className="px-6 py-4 text-left text-xs font-bold text-slate-600 uppercase tracking-wider">Contact</th>
-                                    <th className="px-6 py-4 text-left text-xs font-bold text-slate-600 uppercase tracking-wider">Role</th>
-                                    <th className="px-6 py-4 text-left text-xs font-bold text-slate-600 uppercase tracking-wider">Joined</th>
-                                    <th className="px-6 py-4 text-left text-xs font-bold text-slate-600 uppercase tracking-wider">Actions</th>
+                                    <th className="px-6 py-4 text-left text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider">User</th>
+                                    <th className="px-6 py-4 text-left text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider">Contact</th>
+                                    <th className="px-6 py-4 text-left text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider">Role</th>
+                                    <th className="px-6 py-4 text-left text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider">Joined</th>
+                                    <th className="px-6 py-4 text-left text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-slate-100">
+                            <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
                                 {filteredUsers.map((user: User) => (
-                                    <tr key={user.id} className="hover:bg-slate-50 transition-colors">
+                                    <tr key={user.id} className="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors">
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-3">
                                                 <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold">
                                                     {user.name.charAt(0).toUpperCase()}
                                                 </div>
                                                 <div>
-                                                    <p className="font-bold text-slate-900">{user.name}</p>
-                                                    <p className="text-xs text-slate-500">{user.id.slice(0, 8)}</p>
+                                                    <p className="font-bold text-slate-900 dark:text-white">{user.name}</p>
+                                                    <p className="text-xs text-slate-500 dark:text-slate-400">{user.id.slice(0, 8)}</p>
                                                 </div>
                                             </div>
                                         </td>
                                         <td className="px-6 py-4">
                                             <div className="space-y-1">
-                                                <div className="flex items-center gap-2 text-sm text-slate-600">
+                                                <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400">
                                                     <Mail className="h-3 w-3" />
                                                     {user.email}
                                                 </div>
-                                                <div className="flex items-center gap-2 text-sm text-slate-600">
+                                                <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400">
                                                     <Phone className="h-3 w-3" />
                                                     {user.phone}
                                                 </div>
@@ -282,6 +283,19 @@ export default function AdminUsersPage() {
                                                         );
                                                     })}
                                                 </div>
+                                                {user.hub && (
+                                                    <div className="flex items-start gap-1.5 px-1 mt-0.5">
+                                                        <MapPin className="h-3.5 w-3.5 text-slate-400 shrink-0 mt-0.5" />
+                                                        <div className="flex flex-col">
+                                                            <span className="text-[11px] font-bold text-slate-600 dark:text-slate-300">
+                                                                {user.hub.name}
+                                                            </span>
+                                                            <span className="text-[10px] text-slate-400 truncate max-w-[200px]" title={user.hub.address}>
+                                                                {user.hub.address}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                )}
                                                 {/* Show current active role indicator if multiple roles exist */}
                                                 {(user.roles || []).length > 1 && (
                                                     <div className="flex items-center gap-1.5 px-1">
@@ -294,7 +308,7 @@ export default function AdminUsersPage() {
                                             </div>
                                         </td>
                                         <td className="px-6 py-4">
-                                            <div className="flex items-center gap-2 text-sm text-slate-600">
+                                            <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400">
                                                 <Calendar className="h-3 w-3" />
                                                 {new Date(user.createdAt).toLocaleDateString()}
                                             </div>
@@ -303,14 +317,14 @@ export default function AdminUsersPage() {
                                             <div className="flex items-center gap-2">
                                                 <button
                                                     onClick={() => setSelectedUser(user)}
-                                                    className="p-2 hover:bg-blue-50 rounded-lg transition-colors text-blue-600"
+                                                    className="p-2 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-colors text-blue-600"
                                                     title="Edit user"
                                                 >
                                                     <Edit2 className="h-4 w-4" />
                                                 </button>
                                                 <button
                                                     onClick={() => setShowDeleteConfirm(user.id)}
-                                                    className="p-2 hover:bg-red-50 rounded-lg transition-colors text-red-600"
+                                                    className="p-2 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors text-red-600"
                                                     title="Delete user"
                                                 >
                                                     <Trash2 className="h-4 w-4" />
@@ -328,14 +342,14 @@ export default function AdminUsersPage() {
             {/* Delete Confirmation Modal */}
             {showDeleteConfirm && (
                 <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-                    <div className="bg-white rounded-2xl p-6 max-w-md w-full">
+                    <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 max-w-md w-full">
                         <div className="flex items-start gap-4 mb-6">
                             <div className="p-3 bg-red-100 rounded-xl">
                                 <AlertCircle className="h-6 w-6 text-red-600" />
                             </div>
                             <div>
-                                <h3 className="font-bold text-lg text-slate-900 mb-1">Delete User</h3>
-                                <p className="text-sm text-slate-600">
+                                <h3 className="font-bold text-lg text-slate-900 dark:text-white mb-1">Delete User</h3>
+                                <p className="text-sm text-slate-600 dark:text-slate-400">
                                     Are you sure you want to delete this user? This action cannot be undone.
                                 </p>
                             </div>
@@ -343,7 +357,7 @@ export default function AdminUsersPage() {
                         <div className="flex gap-3">
                             <button
                                 onClick={() => setShowDeleteConfirm(null)}
-                                className="flex-1 px-4 py-2.5 rounded-xl border border-slate-200 font-bold text-slate-700 hover:bg-slate-50 transition-colors"
+                                className="flex-1 px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
                             >
                                 Cancel
                             </button>
@@ -430,70 +444,70 @@ function UserCreateModal({ onClose, onSuccess }: { onClose: () => void; onSucces
 
     return (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-2xl p-6 max-w-md w-full max-h-[90vh] overflow-y-auto">
+            <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 max-w-md w-full max-h-[90vh] overflow-y-auto">
                 <div className="flex items-center justify-between mb-6">
                     <div>
-                        <h3 className="font-bold text-xl text-slate-900">Create New User</h3>
-                        <p className="text-sm text-slate-500 mt-1">Add a new user to the platform</p>
+                        <h3 className="font-bold text-xl text-slate-900 dark:text-white">Create New User</h3>
+                        <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Add a new user to the platform</p>
                     </div>
-                    <button onClick={onClose} className="p-2 hover:bg-slate-100 rounded-lg transition-colors">
+                    <button onClick={onClose} className="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors">
                         <X className="h-5 w-5" />
                     </button>
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
-                        <label className="block text-sm font-bold text-slate-700 mb-2">Full Name</label>
+                        <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Full Name</label>
                         <input
                             type="text"
                             value={formData.name}
                             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                            className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                            className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
                             placeholder="John Doe"
                             required
                         />
                     </div>
 
                     <div>
-                        <label className="block text-sm font-bold text-slate-700 mb-2">Email Address</label>
+                        <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Email Address</label>
                         <input
                             type="email"
                             value={formData.email}
                             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                            className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                            className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
                             placeholder="john@example.com"
                             required
                         />
                     </div>
 
                     <div>
-                        <label className="block text-sm font-bold text-slate-700 mb-2">Password</label>
+                        <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Password</label>
                         <input
                             type="password"
                             value={formData.password}
                             onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                            className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                            className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
                             placeholder="••••••••"
                             required
                             minLength={6}
                         />
-                        <p className="text-xs text-slate-500 mt-1">Minimum 6 characters</p>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Minimum 6 characters</p>
                     </div>
 
                     <div>
-                        <label className="block text-sm font-bold text-slate-700 mb-2">Phone Number</label>
+                        <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Phone Number</label>
                         <input
                             type="tel"
                             value={formData.phone}
                             onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                            className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                            className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
                             placeholder="+1234567890"
                             required
                         />
                     </div>
 
-                    <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-4">
-                        <label className="block text-sm font-bold text-slate-700">Account Access Modes</label>
+                    <div className="p-4 bg-slate-50 dark:bg-slate-700/50 rounded-2xl border border-slate-200 dark:border-slate-600 space-y-4">
+                        <label className="block text-sm font-bold text-slate-700 dark:text-slate-300">Account Access Modes</label>
                         <div className="grid grid-cols-2 gap-3">
                             <button
                                 type="button"
@@ -533,7 +547,7 @@ function UserCreateModal({ onClose, onSuccess }: { onClose: () => void; onSucces
                                         setRoles(prev => [...prev, e.target.value]);
                                     }
                                 }}
-                                className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none bg-white font-medium"
+                                className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none font-medium"
                             >
                                 <option value="customer">Sender</option>
                                 <option value="traveler">Traveler</option>
@@ -620,60 +634,62 @@ function UserEditModal({ user, onClose, onSuccess }: { user: User; onClose: () =
 
     return (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-2xl p-6 max-w-md w-full max-h-[90vh] overflow-y-auto">
+            <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 max-w-md w-full max-h-[90vh] overflow-y-auto">
                 <div className="flex items-center justify-between mb-6">
-                    <h3 className="font-bold text-xl text-slate-900">Edit User</h3>
-                    <button onClick={onClose} className="p-2 hover:bg-slate-100 rounded-lg transition-colors">
+                    <h3 className="font-bold text-xl text-slate-900 dark:text-white">Edit User</h3>
+                    <button onClick={onClose} className="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors">
                         <X className="h-5 w-5" />
                     </button>
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
-                        <label className="block text-sm font-bold text-slate-700 mb-2">Name</label>
+                        <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Name</label>
                         <input
                             type="text"
                             value={formData.name}
                             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                            className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                            className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
                             required
                         />
                     </div>
 
                     <div>
-                        <label className="block text-sm font-bold text-slate-700 mb-2">Email</label>
+                        <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Email</label>
                         <input
                             type="email"
                             value={formData.email}
                             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                            className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                            className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
                             required
                         />
                     </div>
 
                     <div>
-                        <label className="block text-sm font-bold text-slate-700 mb-2">Phone</label>
+                        <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Phone</label>
                         <input
                             type="tel"
                             value={formData.phone}
                             onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                            className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                            className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
                             required
                         />
                     </div>
 
-                    <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-4">
-                        <label className="block text-sm font-bold text-slate-700">Account Access Modes</label>
+                    <div className="p-4 bg-slate-50 dark:bg-slate-700/50 rounded-2xl border border-slate-200 dark:border-slate-600 space-y-4">
+                        <label className="block text-sm font-bold text-slate-700 dark:text-slate-300">Account Access Modes</label>
                         <div className="grid grid-cols-2 gap-3">
                             <button
                                 type="button"
                                 onClick={() => toggleRole('customer')}
                                 className={cn(
-                                    "flex items-center gap-2 p-3 rounded-xl border-2 transition-all hover:border-slate-300",
-                                    roles.includes('customer') ? "bg-blue-50 border-blue-500 text-blue-700" : "bg-white border-slate-200 text-slate-600"
+                                    "flex items-center gap-2 p-3 rounded-xl border-2 transition-all hover:border-slate-300 dark:hover:border-slate-600",
+                                    roles.includes('customer')
+                                        ? "bg-blue-50 border-blue-500 text-blue-700 dark:bg-blue-900/20 dark:border-blue-500 dark:text-blue-400"
+                                        : "bg-white border-slate-200 text-slate-600 dark:bg-slate-700 dark:border-slate-600 dark:text-slate-400"
                                 )}
                             >
-                                <div className={cn("h-4 w-4 rounded border-2 flex items-center justify-center", roles.includes('customer') ? "bg-blue-600 border-blue-600" : "border-slate-300")}>
+                                <div className={cn("h-4 w-4 rounded border-2 flex items-center justify-center", roles.includes('customer') ? "bg-blue-600 border-blue-600" : "border-slate-300 dark:border-slate-600")}>
                                     {roles.includes('customer') && <Users className="h-3 w-3 text-white" />}
                                 </div>
                                 <span className="text-sm font-bold">Sender</span>
@@ -682,11 +698,13 @@ function UserEditModal({ user, onClose, onSuccess }: { user: User; onClose: () =
                                 type="button"
                                 onClick={() => toggleRole('traveler')}
                                 className={cn(
-                                    "flex items-center gap-2 p-3 rounded-xl border-2 transition-all hover:border-slate-300",
-                                    roles.includes('traveler') ? "bg-pink-50 border-pink-500 text-pink-700" : "bg-white border-slate-200 text-slate-600"
+                                    "flex items-center gap-2 p-3 rounded-xl border-2 transition-all hover:border-slate-300 dark:hover:border-slate-600",
+                                    roles.includes('traveler')
+                                        ? "bg-pink-50 border-pink-500 text-pink-700 dark:bg-pink-900/20 dark:border-pink-500 dark:text-pink-400"
+                                        : "bg-white border-slate-200 text-slate-600 dark:bg-slate-700 dark:border-slate-600 dark:text-slate-400"
                                 )}
                             >
-                                <div className={cn("h-4 w-4 rounded border-2 flex items-center justify-center", roles.includes('traveler') ? "bg-pink-600 border-pink-600" : "border-slate-300")}>
+                                <div className={cn("h-4 w-4 rounded border-2 flex items-center justify-center", roles.includes('traveler') ? "bg-pink-600 border-pink-600" : "border-slate-300 dark:border-slate-600")}>
                                     {roles.includes('traveler') && <Users className="h-3 w-3 text-white" />}
                                 </div>
                                 <span className="text-sm font-bold">Traveler</span>
@@ -703,7 +721,7 @@ function UserEditModal({ user, onClose, onSuccess }: { user: User; onClose: () =
                                         setRoles(prev => Array.from(new Set([...prev, e.target.value])));
                                     }
                                 }}
-                                className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none bg-white font-medium"
+                                className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none font-medium"
                             >
                                 <option value="customer">Sender</option>
                                 <option value="traveler">Traveler</option>
@@ -726,7 +744,7 @@ function UserEditModal({ user, onClose, onSuccess }: { user: User; onClose: () =
                         <button
                             type="button"
                             onClick={onClose}
-                            className="flex-1 px-4 py-2.5 rounded-xl border border-slate-200 font-bold text-slate-700 hover:bg-slate-50 transition-colors"
+                            className="flex-1 px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
                         >
                             Cancel
                         </button>

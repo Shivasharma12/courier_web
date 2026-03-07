@@ -25,13 +25,15 @@ export default function HubDashboard() {
     const capacityPercentage = hubStats ? (hubStats.inventory / hubStats.capacity) * 100 : 0;
 
     if (isLoading) return (
-        <div className="p-8 flex items-center gap-3">
+        <div className="p-8 flex items-center justify-center min-h-[400px] gap-3">
             <Activity className="h-8 w-8 animate-spin text-blue-600" />
-            <span className="text-muted-foreground font-medium">Loading statistics...</span>
+            <span className="text-muted-foreground font-medium">Loading hub statistics...</span>
         </div>
     );
 
-    if (error && !activeHubId) {
+    const isUnassigned = !activeHubId || (!isLoading && !hubStats && !error);
+
+    if (isUnassigned) {
         return (
             <div className="p-8 flex flex-col items-center justify-center space-y-6 pt-20">
                 <div className="bg-amber-50 dark:bg-amber-900/10 p-10 rounded-[40px] border border-amber-100 dark:border-amber-900/30 flex flex-col items-center gap-6 shadow-2xl shadow-amber-50/50 dark:shadow-none max-w-md text-center">
@@ -41,12 +43,12 @@ export default function HubDashboard() {
                     <div>
                         <h2 className="text-2xl font-black text-amber-900 dark:text-amber-200 uppercase tracking-tight">Hub Not Found</h2>
                         <p className="text-amber-700 dark:text-amber-300 font-medium mt-2 leading-relaxed">
-                            You are not assigned to any existing hub and no hubs were detected nearby.
+                            You are not assigned to any existing hub. Set up your hub profile to start managing parcels.
                         </p>
                     </div>
                     <a
                         href="/hub/profile"
-                        className="bg-blue-600 hover:bg-blue-700 text-white font-bold px-8 py-4 rounded-2xl shadow-lg shadow-blue-100/20 transition-all flex items-center gap-2 group"
+                        className="bg-blue-600 hover:bg-blue-700 text-white font-bold px-8 py-4 rounded-2xl shadow-lg shadow-blue-500/20 transition-all flex items-center gap-2 group"
                     >
                         Set Up Your Hub Now
                         <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
@@ -58,9 +60,13 @@ export default function HubDashboard() {
 
     if (error) {
         return (
-            <div className="p-8 flex flex-col items-center justify-center space-y-4">
-                <div className="bg-red-50 dark:bg-red-900/10 p-6 rounded-3xl border border-red-100 dark:border-red-900/30 text-red-600 dark:text-red-400 font-bold text-center">
-                    {(error as any).response?.data?.message || 'Access Denied: Please ensure you are assigned to a hub.'}
+            <div className="p-8 flex flex-col items-center justify-center space-y-4 pt-20">
+                <div className="bg-red-50 dark:bg-red-900/10 p-8 rounded-[32px] border border-red-100 dark:border-red-900/30 text-red-600 dark:text-red-400 max-w-md text-center">
+                    <AlertTriangle className="h-10 w-10 mx-auto mb-4 text-red-500" />
+                    <p className="text-lg font-bold">
+                        {(error as any).response?.data?.message || 'Access Denied: Please ensure you are assigned to a hub.'}
+                    </p>
+                    <p className="text-sm mt-2 opacity-70">If you believe this is an error, please contact your administrator.</p>
                 </div>
             </div>
         );
@@ -104,7 +110,7 @@ export default function HubDashboard() {
                     </div>
                     <a
                         href="/hub/profile"
-                        className="bg-blue-600 hover:bg-blue-700 text-white font-bold px-8 py-4 rounded-2xl shadow-lg shadow-blue-100/20 transition-all flex items-center gap-2 group"
+                        className="bg-blue-600 hover:bg-blue-700 text-white font-bold px-8 py-4 rounded-2xl shadow-lg shadow-blue-500/20 transition-all flex items-center gap-2 group"
                     >
                         Update & Resubmit <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
                     </a>
@@ -123,7 +129,7 @@ export default function HubDashboard() {
                     </p>
                 </div>
                 <div className="flex flex-col items-end gap-2">
-                    <div className="bg-blue-600 text-white px-4 py-2 rounded-xl text-sm font-bold shadow-lg shadow-blue-100/20">
+                    <div className="bg-blue-600 text-white px-4 py-2 rounded-xl text-sm font-bold shadow-lg shadow-blue-500/20">
                         Live Status: Healthy
                     </div>
                 </div>

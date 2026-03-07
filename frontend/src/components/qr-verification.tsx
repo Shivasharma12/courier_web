@@ -43,7 +43,7 @@ export default function QRVerification({
     const qrValue = JSON.stringify({ handoverId, code: verifyCode });
 
     return (
-        <div className="bg-white rounded-3xl p-8 border border-slate-100 shadow-2xl flex flex-col items-center gap-8 max-w-sm mx-auto">
+        <div className="bg-white dark:bg-slate-800 rounded-3xl p-8 border border-slate-100 dark:border-slate-700 shadow-2xl flex flex-col items-center gap-8 max-w-sm mx-auto">
             <div className="text-center space-y-2">
                 <div className="bg-blue-50 p-3 rounded-2xl inline-block">
                     <ShieldCheck className="h-8 w-8 text-blue-600" />
@@ -56,7 +56,7 @@ export default function QRVerification({
 
             {role === 'sender' && verifyCode ? (
                 <div className="space-y-6 flex flex-col items-center w-full">
-                    <div className="bg-white p-6 rounded-[2rem] shadow-xl shadow-slate-100 border border-slate-50 relative group">
+                    <div className="bg-white dark:bg-slate-700 p-6 rounded-[2rem] shadow-xl shadow-slate-500/10 border border-slate-50 dark:border-slate-600 relative group">
                         <QRCodeSVG
                             value={qrValue}
                             size={200}
@@ -87,7 +87,7 @@ export default function QRVerification({
                     <button
                         onClick={handleVerify}
                         disabled={loading || inputCode.length < 6}
-                        className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-slate-100 disabled:text-slate-400 text-white font-black py-4 rounded-2xl shadow-xl shadow-blue-100 transition-all flex items-center justify-center gap-2 active:scale-95"
+                        className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-slate-100 disabled:text-slate-400 dark:disabled:bg-slate-700 dark:disabled:text-slate-500 text-white font-black py-4 rounded-2xl shadow-xl shadow-blue-500/20 transition-all flex items-center justify-center gap-2 active:scale-95"
                     >
                         {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : <CheckCircle className="h-5 w-5" />}
                         VERIFY HANDOVER

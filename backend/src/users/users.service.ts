@@ -95,7 +95,7 @@ export class UsersService {
 
     async findAll(): Promise<User[]> {
         const users = await this.usersRepository.find({
-            select: ['id', 'name', 'email', 'phone', 'role', 'roles', 'hubId', 'createdAt'],
+            relations: ['hub']
         });
 
         return users.map(u => ({
@@ -107,7 +107,7 @@ export class UsersService {
     async findByRole(role: string): Promise<User[]> {
         const users = await this.usersRepository.find({
             where: { role },
-            select: ['id', 'name', 'email', 'phone', 'role', 'roles', 'createdAt', 'hubId']
+            relations: ['hub']
         });
         return users.map(u => ({
             ...u,
@@ -186,5 +186,19 @@ export class UsersService {
 
         await this.usersRepository.update(userId, { role: targetRole });
         return this.findById(userId) as Promise<User>;
+    }
+
+    async changePassword(userId: string, oldPass: string, newPass: string): Promise<void> {
+        const user = await this.usersRepository.findOne({
+            where: { id: userId },
+            select: ['id', 'password'],
+        });
+        if (!user) throw new Error('User not found');
+
+        const isMatch = await bcrypt.compare(oldPass, user.password);
+        if (!isMatch) throw new Error('Current password does not match');
+
+        const hashed = await bcrypt.hash(newPass, 10);
+        await this.usersRepository.update(userId, { password: hashed });
     }
 }

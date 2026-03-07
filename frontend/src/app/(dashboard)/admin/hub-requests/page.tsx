@@ -58,8 +58,8 @@ export default function AdminHubRequestsPage() {
     return (
         <div className="space-y-8 pb-20">
             <div>
-                <h1 className="text-3xl font-bold text-slate-900 tracking-tight">Hub Management Requests</h1>
-                <p className="text-slate-500 mt-1">Review operational change requests submitted by Hub Managers.</p>
+                <h1 className="text-3xl font-bold text-slate-900 dark:text-white tracking-tight">Hub Management Requests</h1>
+                <p className="text-slate-500 dark:text-slate-400 mt-1">Review operational change requests submitted by Hub Managers.</p>
             </div>
 
             {/* Pending Requests */}
@@ -70,8 +70,8 @@ export default function AdminHubRequestsPage() {
                 </div>
 
                 {pendingRequests.length === 0 ? (
-                    <div className="bg-white rounded-3xl p-12 text-center border border-slate-100 shadow-sm">
-                        <div className="bg-slate-50 h-16 w-16 rounded-full flex items-center justify-center mx-auto mb-4 border border-slate-100">
+                    <div className="bg-white dark:bg-slate-800 rounded-3xl p-12 text-center border border-slate-100 dark:border-slate-700 shadow-sm">
+                        <div className="bg-slate-50 dark:bg-slate-700 h-16 w-16 rounded-full flex items-center justify-center mx-auto mb-4 border border-slate-100 dark:border-slate-600">
                             <Check className="h-8 w-8 text-slate-300" />
                         </div>
                         <p className="text-slate-500 font-medium">All caught up! No pending hub requests.</p>
@@ -79,7 +79,7 @@ export default function AdminHubRequestsPage() {
                 ) : (
                     <div className="grid grid-cols-1 gap-6">
                         {pendingRequests.map((request: any) => (
-                            <div key={request.id} className="bg-white rounded-[2.5rem] p-8 border border-slate-100 shadow-sm hover:shadow-md transition-all">
+                            <div key={request.id} className="bg-white dark:bg-slate-800 rounded-[2.5rem] p-8 border border-slate-100 dark:border-slate-700 shadow-sm hover:shadow-md transition-all">
                                 <div className="flex flex-col lg:flex-row gap-8">
                                     {/* Left: Hub Info */}
                                     <div className="lg:w-1/3 space-y-4">
@@ -88,7 +88,7 @@ export default function AdminHubRequestsPage() {
                                                 <Home className="h-6 w-6 text-blue-600" />
                                             </div>
                                             <div>
-                                                <h3 className="font-bold text-slate-900 text-lg">{request.hub?.name}</h3>
+                                                <h3 className="font-bold text-slate-900 dark:text-white text-lg">{request.hub?.name}</h3>
                                                 <div className="flex items-center gap-1.5 text-xs text-slate-400 mt-1">
                                                     <User className="h-3 w-3" />
                                                     <span>Managed by {request.manager?.name}</span>
@@ -99,11 +99,11 @@ export default function AdminHubRequestsPage() {
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className="bg-slate-50 rounded-2xl p-4 border border-slate-100">
+                                        <div className="bg-slate-50 dark:bg-slate-700/50 rounded-2xl p-4 border border-slate-100 dark:border-slate-600">
                                             <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Original Data</p>
                                             <div className="space-y-1.5">
-                                                <p className="text-[10px] text-slate-600"><strong>Hours:</strong> {request.hub?.operatingHours || 'Not set'}</p>
-                                                <p className="text-[10px] text-slate-600"><strong>Cap:</strong> {request.hub?.capacity || 1000}</p>
+                                                <p className="text-[10px] text-slate-600 dark:text-slate-400"><strong>Hours:</strong> {request.hub?.operatingHours || 'Not set'}</p>
+                                                <p className="text-[10px] text-slate-600 dark:text-slate-400"><strong>Cap:</strong> {request.hub?.capacity || 1000}</p>
                                             </div>
                                         </div>
                                     </div>
@@ -114,30 +114,30 @@ export default function AdminHubRequestsPage() {
                                             <AlertCircle className="h-4 w-4 text-amber-500" />
                                             <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Requested Changes</h4>
                                         </div>
-                                        <div className="bg-amber-50/50 rounded-3xl p-6 border border-amber-100/50 flex-1 space-y-4">
+                                        <div className="bg-amber-50/50 dark:bg-amber-900/10 rounded-3xl p-6 border border-amber-100/50 dark:border-amber-700/30 flex-1 space-y-4">
                                             {request.requestedData.name && request.requestedData.name !== request.hub?.name && (
                                                 <div>
                                                     <p className="text-[10px] text-amber-600 font-bold uppercase tracking-wider mb-1">Rename Hub</p>
-                                                    <p className="text-sm font-bold text-slate-800">{request.requestedData.name}</p>
+                                                    <p className="text-sm font-bold text-slate-800 dark:text-slate-100">{request.requestedData.name}</p>
                                                 </div>
                                             )}
                                             {request.requestedData.description && (
                                                 <div>
                                                     <p className="text-[10px] text-amber-600 font-bold uppercase tracking-wider mb-1">Description</p>
-                                                    <p className="text-sm text-slate-700 leading-relaxed font-medium line-clamp-3">{request.requestedData.description}</p>
+                                                    <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed font-medium line-clamp-3">{request.requestedData.description}</p>
                                                 </div>
                                             )}
                                             <div className="grid grid-cols-2 gap-4">
                                                 {request.requestedData.operatingHours && (
                                                     <div>
                                                         <p className="text-[10px] text-amber-600 font-bold uppercase tracking-wider mb-1">Hours</p>
-                                                        <p className="text-sm font-bold text-slate-800">{request.requestedData.operatingHours}</p>
+                                                        <p className="text-sm font-bold text-slate-800 dark:text-slate-100">{request.requestedData.operatingHours}</p>
                                                     </div>
                                                 )}
                                                 {request.requestedData.capacity && (
                                                     <div>
                                                         <p className="text-[10px] text-amber-600 font-bold uppercase tracking-wider mb-1">Capacity</p>
-                                                        <p className="text-sm font-bold text-slate-800">{request.requestedData.capacity}</p>
+                                                        <p className="text-sm font-bold text-slate-800 dark:text-slate-100">{request.requestedData.capacity}</p>
                                                     </div>
                                                 )}
                                             </div>
@@ -149,7 +149,7 @@ export default function AdminHubRequestsPage() {
                                         <div className="relative">
                                             <textarea
                                                 placeholder="Admin feedback (required for rejection)"
-                                                className="w-full bg-slate-50 border border-slate-200 rounded-2xl p-4 text-sm font-medium outline-none focus:ring-2 focus:ring-blue-500 transition-all resize-none"
+                                                className="w-full bg-slate-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600 rounded-2xl p-4 text-sm font-medium text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-blue-500 transition-all resize-none placeholder-slate-400 dark:placeholder-slate-500"
                                                 rows={2}
                                                 value={processingId === request.id ? comment : ''}
                                                 onChange={(e) => {
@@ -165,7 +165,7 @@ export default function AdminHubRequestsPage() {
                                                     approveMutation.mutate({ id: request.id, comment });
                                                 }}
                                                 disabled={approveMutation.isPending && processingId === request.id}
-                                                className="bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-xl shadow-lg shadow-green-100 flex items-center justify-center gap-2 transition-all"
+                                                className="bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-xl shadow-lg shadow-green-500/20 flex items-center justify-center gap-2 transition-all"
                                             >
                                                 {approveMutation.isPending && processingId === request.id ? (
                                                     <Loader2 className="h-4 w-4 animate-spin" />
@@ -204,15 +204,15 @@ export default function AdminHubRequestsPage() {
 
             {/* History */}
             {historyRequests.length > 0 && (
-                <div className="space-y-6 pt-10 border-t border-slate-100">
+                <div className="space-y-6 pt-10 border-t border-slate-100 dark:border-slate-700">
                     <div className="flex items-center gap-2">
                         <div className="h-2 w-2 rounded-full bg-slate-300" />
                         <h2 className="text-xs font-black text-slate-400 uppercase tracking-widest">Processsed History</h2>
                     </div>
 
-                    <div className="bg-white rounded-3xl border border-slate-100 overflow-hidden shadow-sm">
+                    <div className="bg-white dark:bg-slate-800 rounded-3xl border border-slate-100 dark:border-slate-700 overflow-hidden shadow-sm">
                         <table className="w-full text-left">
-                            <thead className="bg-slate-50 border-b border-slate-100">
+                            <thead className="bg-slate-50 dark:bg-slate-700/50 border-b border-slate-100 dark:border-slate-700">
                                 <tr>
                                     <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Hub</th>
                                     <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Date</th>
@@ -220,12 +220,12 @@ export default function AdminHubRequestsPage() {
                                     <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Admin Note</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-slate-50">
+                            <tbody className="divide-y divide-slate-50 dark:divide-slate-700">
                                 {historyRequests.slice(0, 10).map((req: any) => (
-                                    <tr key={req.id} className="hover:bg-slate-50/50 transition-colors">
+                                    <tr key={req.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-700/30 transition-colors">
                                         <td className="px-6 py-4">
-                                            <p className="text-sm font-bold text-slate-800">{req.hub?.name}</p>
-                                            <p className="text-[10px] text-slate-400">{req.manager?.name}</p>
+                                            <p className="text-sm font-bold text-slate-800 dark:text-slate-100">{req.hub?.name}</p>
+                                            <p className="text-[10px] text-slate-400 dark:text-slate-500">{req.manager?.name}</p>
                                         </td>
                                         <td className="px-6 py-4 text-xs font-medium text-slate-500">
                                             {new Date(req.createdAt).toLocaleDateString()}

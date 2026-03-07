@@ -6,6 +6,7 @@ import { AppService } from './app.service';
 import { User } from './users/entities/user.entity';
 import { Hub } from './hubs/entities/hub.entity';
 import { Parcel } from './parcels/entities/parcel.entity';
+import { ParcelLeg } from './parcels/entities/parcel-leg.entity';
 import { Delivery } from './deliveries/entities/delivery.entity';
 import { TrackingLog } from './tracking/entities/tracking-log.entity';
 import { TransportMode } from './transport-modes/entities/transport-mode.entity';
@@ -26,6 +27,7 @@ import { RoutePlanningModule } from './route-planning/route-planning.module';
 import { TravelPlansModule } from './travel-plans/travel-plans.module';
 import { CommonModule } from './common/common.module';
 import { HandoversModule } from './handovers/handovers.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -46,12 +48,13 @@ import { HandoversModule } from './handovers/handovers.module';
           username: url ? undefined : config.get<string>('DB_USERNAME', 'postgres'),
           password: url ? undefined : config.get<string>('DB_PASSWORD', 'Shiva@123'),
           database: url ? undefined : config.get<string>('DB_DATABASE', 'courier_db'),
-          entities: [User, Hub, HubUpdate, Parcel, Delivery, TrackingLog, TransportMode, RouteSegment, TravelPlan, Handover, Notification],
+          entities: [User, Hub, HubUpdate, Parcel, ParcelLeg, Delivery, TrackingLog, TransportMode, RouteSegment, TravelPlan, Handover, Notification],
           synchronize: true, // Set to false in production
           ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
         };
       },
     }),
+    ScheduleModule.forRoot(),
     AuthModule,
     UsersModule,
     HubsModule,

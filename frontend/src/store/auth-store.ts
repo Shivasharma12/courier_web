@@ -8,6 +8,7 @@ interface User {
     role: 'admin' | 'customer' | 'hub_manager' | 'traveler';
     roles?: string[];
     hubId?: string;
+    phone?: string;
 }
 
 interface AuthState {

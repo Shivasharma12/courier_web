@@ -143,13 +143,15 @@ export default function DashboardSidebar() {
                     { name: 'Travel Plans', href: '/admin/travel-plans', icon: Truck },
                     { name: 'Parcels', href: '/admin/parcels', icon: Package },
                     { name: 'Pricing Rules', href: '/admin/pricing', icon: Settings },
+                    { name: 'My Profile', href: '/profile', icon: User },
                 ];
             case 'customer':
                 return [
                     { name: 'Overview', href: '/customer', icon: LayoutDashboard },
                     { name: 'Create Parcel', href: '/customer/create', icon: PlusCircle },
                     { name: 'My Parcels', href: '/customer/history', icon: History },
-                    { name: 'Tracking', href: '/customer/track', icon: MapPin },
+                    { name: 'Tracking', href: '/track', icon: MapPin },
+                    { name: 'My Profile', href: '/profile', icon: User },
                 ];
             case 'traveler':
                 return [
@@ -157,6 +159,7 @@ export default function DashboardSidebar() {
                     { name: 'Post Route', href: '/traveler/post-route', icon: PlusCircle },
                     { name: 'View Matches', href: '/traveler/matches', icon: Package },
                     { name: 'My Deliveries', href: '/traveler/deliveries', icon: Truck },
+                    { name: 'My Profile', href: '/profile', icon: User },
                 ];
             case 'hub_manager':
                 return [
@@ -164,6 +167,7 @@ export default function DashboardSidebar() {
                     { name: 'Inventory', href: '/hub/inventory', icon: Package },
                     { name: 'Dispatch', href: '/hub/dispatch', icon: Truck },
                     { name: 'Hub Profile', href: '/hub/profile', icon: MapPin },
+                    { name: 'My Profile', href: '/profile', icon: User },
                 ];
             default:
                 return [];

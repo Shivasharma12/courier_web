@@ -114,13 +114,13 @@ export default function LocationPicker({ onLocationSelect, onLocationData, place
 
     return (
         <div className="relative">
-            {defaultLabel && <label className="text-sm font-medium text-slate-700 block mb-1">{defaultLabel}</label>}
+            {defaultLabel && <label className="text-sm font-medium text-foreground block mb-1">{defaultLabel}</label>}
             <div className="relative">
                 <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
                 <input
                     type="text"
                     placeholder={placeholder || "Search address..."}
-                    className="w-full pl-12 pr-12 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                    className="w-full pl-12 pr-12 py-2.5 rounded-xl border border-border bg-background dark:bg-slate-800 text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
                     value={address}
                     onChange={(e) => handleInputChange(e.target.value)}
                     onFocus={() => suggestions.length > 0 && setShowSuggestions(true)}
@@ -193,7 +193,7 @@ export default function LocationPicker({ onLocationSelect, onLocationData, place
 
             {/* Suggestions Dropdown */}
             {showSuggestions && suggestions.length > 0 && (
-                <div className="absolute z-50 w-full mt-2 bg-white border border-slate-200 rounded-xl shadow-lg max-h-60 overflow-y-auto">
+                <div className="absolute z-50 w-full mt-2 bg-background dark:bg-slate-800 border border-border rounded-xl shadow-lg max-h-60 overflow-y-auto">
                     {suggestions.map((suggestion) => {
                         const addr = suggestion.address;
                         const localArea = addr?.neighbourhood || addr?.suburb || addr?.village || addr?.colony || addr?.county;
@@ -203,14 +203,14 @@ export default function LocationPicker({ onLocationSelect, onLocationData, place
                             <button
                                 key={suggestion.place_id}
                                 onClick={() => handleSelectSuggestion(suggestion)}
-                                className="w-full px-4 py-3 text-left hover:bg-slate-50 transition-colors border-b border-slate-100 last:border-b-0 flex items-start gap-3"
+                                className="w-full px-4 py-3 text-left hover:bg-muted/60 transition-colors border-b border-border last:border-b-0 flex items-start gap-3"
                             >
                                 <MapPin className="h-4 w-4 text-blue-500 mt-1 flex-shrink-0" />
                                 <div className="flex flex-col">
-                                    <span className="text-sm font-bold text-slate-700">
+                                    <span className="text-sm font-bold text-foreground">
                                         {localArea ? `${localArea}, ` : ''}{mainCity}
                                     </span>
-                                    <span className="text-[10px] text-slate-400 line-clamp-1">{suggestion.display_name}</span>
+                                    <span className="text-[10px] text-muted-foreground line-clamp-1">{suggestion.display_name}</span>
                                 </div>
                             </button>
                         );

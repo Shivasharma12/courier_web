@@ -71,6 +71,20 @@ export class UsersController {
         }
     }
 
+    @Patch('change-password')
+    @ApiOperation({ summary: 'Change current user password' })
+    async changePassword(@Request() req, @Body() data: any) {
+        if (!data.oldPassword || !data.newPassword) {
+            throw new BadRequestException('oldPassword and newPassword are required');
+        }
+        try {
+            await this.usersService.changePassword(req.user.userId, data.oldPassword, data.newPassword);
+            return { success: true, message: 'Password changed successfully' };
+        } catch (e) {
+            throw new BadRequestException(e.message);
+        }
+    }
+
     @Get()
     @Roles(Role.ADMIN)
     @ApiOperation({ summary: 'Get all users (Admin only)' })

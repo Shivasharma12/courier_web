@@ -38,10 +38,10 @@ export default function AdminDashboard() {
     });
 
     const stats = [
-        { name: 'System Revenue', value: '$42,850.20', trend: '+18.2%', trendType: 'up', icon: TrendingUp, color: 'text-green-600 bg-green-50' },
-        { name: 'Total Shipments', value: parcels?.length || 0, trend: '+5.2%', trendType: 'up', icon: Package, color: 'text-blue-600 bg-blue-50' },
-        { name: 'Traveler Partners', value: '1,240', trend: '+12.4%', trendType: 'up', icon: Users, color: 'text-purple-600 bg-purple-50' },
-        { name: 'Global Hubs', value: hubs?.length || 0, trend: '0%', trendType: 'neutral', icon: MapPin, color: 'text-amber-600 bg-amber-50' },
+        { name: 'System Revenue', value: '$42,850.20', trend: '+18.2%', trendType: 'up', icon: TrendingUp, color: 'text-green-600 bg-green-50 dark:bg-green-900/30' },
+        { name: 'Total Shipments', value: parcels?.length || 0, trend: '+5.2%', trendType: 'up', icon: Package, color: 'text-blue-600 bg-blue-50 dark:bg-blue-900/30' },
+        { name: 'Traveler Partners', value: '1,240', trend: '+12.4%', trendType: 'up', icon: Users, color: 'text-purple-600 bg-purple-50 dark:bg-purple-900/30' },
+        { name: 'Global Hubs', value: hubs?.length || 0, trend: '0%', trendType: 'neutral', icon: MapPin, color: 'text-amber-600 bg-amber-50 dark:bg-amber-900/30' },
     ];
 
     return (
@@ -57,7 +57,7 @@ export default function AdminDashboard() {
                     <Link href="/admin/users" className="bg-slate-900 dark:bg-slate-800 text-white px-5 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 hover:bg-slate-800 dark:hover:bg-slate-700 transition-all shadow-lg shadow-slate-200/20">
                         <Users className="h-4 w-4" /> Manage Users
                     </Link>
-                    <Link href="/admin/hubs" className="bg-blue-600 text-white px-5 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 hover:bg-blue-700 transition-all shadow-lg shadow-blue-200/20">
+                    <Link href="/admin/hubs" className="bg-blue-600 text-white px-5 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 hover:bg-blue-700 transition-all shadow-lg shadow-blue-500/20">
                         <Plus className="h-4 w-4" /> New Hub
                     </Link>
                 </div>
@@ -68,9 +68,9 @@ export default function AdminDashboard() {
                 {stats.map((stat) => {
                     const Icon = stat.icon;
                     return (
-                        <div key={stat.name} className="bg-background dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-border flex flex-col gap-4 group hover:scale-[1.02] transition-all">
+                        <div key={stat.name} className="bg-background dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-border flex flex-col gap-4 group hover:scale-[1.02] transition-all">
                             <div className="flex justify-between items-start">
-                                <div className={cn("p-3 rounded-xl transition-transform group-hover:scale-110", stat.color, "dark:bg-opacity-10")}>
+                                <div className={cn("p-3 rounded-xl transition-transform group-hover:scale-110", stat.color)}>
                                     <Icon className="h-6 w-6" />
                                 </div>
                                 <div className={cn(
@@ -93,7 +93,7 @@ export default function AdminDashboard() {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {/* Logistics Flow Chart Mockup */}
                 <div className="lg:col-span-2 space-y-6">
-                    <div className="bg-background dark:bg-slate-900 p-8 rounded-2xl shadow-sm border border-border">
+                    <div className="bg-background dark:bg-slate-800 p-8 rounded-2xl shadow-sm border border-border">
                         <div className="flex justify-between items-center mb-8">
                             <h3 className="font-bold text-foreground flex items-center gap-2">
                                 <Activity className="h-5 w-5 text-blue-600" /> Operational Throughput
@@ -171,7 +171,7 @@ export default function AdminDashboard() {
                         <div className="absolute -right-10 -bottom-10 w-40 h-40 bg-blue-600/20 rounded-full blur-3xl"></div>
                     </div>
 
-                    <div className="bg-background dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-border">
+                    <div className="bg-background dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-border">
                         <h3 className="font-bold text-foreground flex items-center justify-between mb-6">
                             <span className="flex items-center gap-2">
                                 <LayoutDashboard className="h-5 w-5 text-blue-600" /> Active Hubs

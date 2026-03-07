@@ -95,24 +95,23 @@ export default function CreateParcelPage() {
 
     const sortedHubs = (coords: { lat: number, lng: number } | null) => {
         if (!coords) return hubs;
-        return [...hubs].sort((a, b) => {
-            const distA = calculateDistance(coords.lat, coords.lng, a.lat, a.lng);
-            const distB = calculateDistance(coords.lat, coords.lng, b.lat, b.lng);
-            return distA - distB;
-        });
+        return [...hubs]
+            .map(hub => ({ ...hub, dist: calculateDistance(coords.lat, coords.lng, hub.lat, hub.lng) }))
+            .filter(hub => hub.dist <= 50)
+            .sort((a, b) => a.dist - b.dist);
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
         try {
-            // Convert images array to string for backward compatibility with entity
             const dataToSubmit = {
                 ...formData,
                 images: JSON.stringify(formData.images)
             };
-            await api.post('/parcels', dataToSubmit);
-            toast.success('Parcel created successfully!');
+            const { data: created } = await api.post('/parcels', dataToSubmit);
+            const hubName = hubs.find(h => h.id === formData.currentHubId)?.name || 'the selected hub';
+            toast.success(`Parcel request created! Drop it at ${hubName} within 48 hours.`, { duration: 6000 });
             router.push('/customer/history');
         } catch (err: any) {
             console.error(err);
@@ -196,7 +195,7 @@ export default function CreateParcelPage() {
                             {senderCoords && (
                                 <div className="space-y-2">
                                     <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-1">
-                                        Select Starting Hub ({sortedHubs(senderCoords).length} nearby)
+                                        Select Starting Hub ({sortedHubs(senderCoords).length} within 50km)
                                     </label>
                                     <select
                                         className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900/50 border border-border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all font-bold text-foreground disabled:opacity-50"
@@ -204,14 +203,11 @@ export default function CreateParcelPage() {
                                         onChange={(e) => setFormData({ ...formData, currentHubId: e.target.value })}
                                     >
                                         <option value="">Select pickup hub</option>
-                                        {sortedHubs(senderCoords).map(hub => {
-                                            const distance = calculateDistance(senderCoords.lat, senderCoords.lng, hub.lat, hub.lng);
-                                            return (
-                                                <option key={hub.id} value={hub.id}>
-                                                    {hub.name} ({distance.toFixed(1)}km away)
-                                                </option>
-                                            );
-                                        })}
+                                        {sortedHubs(senderCoords).map(hub => (
+                                            <option key={hub.id} value={hub.id}>
+                                                {hub.name} ({hub.dist.toFixed(1)}km away)
+                                            </option>
+                                        ))}
                                     </select>
                                     {sortedHubs(senderCoords).length === 0 && (
                                         <p className="text-[10px] text-red-500 font-bold px-1 animate-pulse">
@@ -274,7 +270,7 @@ export default function CreateParcelPage() {
                             {receiverCoords && (
                                 <div className="space-y-2">
                                     <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-1">
-                                        Select Destination Hub ({sortedHubs(receiverCoords).length} nearby)
+                                        Select Destination Hub ({sortedHubs(receiverCoords).length} within 50km)
                                     </label>
                                     <select
                                         className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900/50 border border-border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all font-bold text-foreground"
@@ -282,18 +278,15 @@ export default function CreateParcelPage() {
                                         onChange={(e) => setFormData({ ...formData, destinationHubId: e.target.value })}
                                     >
                                         <option value="">Select destination hub</option>
-                                        {sortedHubs(receiverCoords).map(hub => {
-                                            const distance = calculateDistance(receiverCoords.lat, receiverCoords.lng, hub.lat, hub.lng);
-                                            return (
-                                                <option key={hub.id} value={hub.id}>
-                                                    {hub.name} ({distance.toFixed(1)}km away)
-                                                </option>
-                                            );
-                                        })}
+                                        {sortedHubs(receiverCoords).map(hub => (
+                                            <option key={hub.id} value={hub.id}>
+                                                {hub.name} ({hub.dist.toFixed(1)}km away)
+                                            </option>
+                                        ))}
                                     </select>
                                     {sortedHubs(receiverCoords).length === 0 && (
                                         <p className="text-[10px] text-red-500 font-bold px-1 animate-pulse">
-                                            No hubs found near this location.
+                                            No hubs within 50km. Try a different location.
                                         </p>
                                     )}
                                     <p className="text-[10px] text-muted-foreground font-medium px-1 italic">
