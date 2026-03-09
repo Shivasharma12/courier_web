@@ -12,6 +12,11 @@ export class AppController {
     return this.appService.getHello();
   }
 
+  @Get('test-route')
+  testRoute() {
+    return { status: 'ok', message: 'Deployment verification successful' };
+  }
+
   @Get('health')
   getHealth() {
     this.logger.log('Health check requested');
