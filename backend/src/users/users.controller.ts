@@ -43,7 +43,9 @@ export class UsersController {
     @Patch('profile')
     @ApiOperation({ summary: 'Update current user profile' })
     async updateProfile(@Request() req, @Body() updates: any) {
-        return this.usersService.updateProfile(req.user.userId, updates);
+        // Sanitize: strip password-related fields - use the dedicated change-password endpoint instead
+        const { oldPassword, newPassword, confirmPassword, password, role, roles, ...safeUpdates } = updates;
+        return this.usersService.updateProfile(req.user.userId, safeUpdates);
     }
 
     @Post('enable-dual-role')
@@ -102,8 +104,10 @@ export class UsersController {
     @Patch(':id')
     @Roles(Role.ADMIN)
     @ApiOperation({ summary: 'Update user by ID (Admin only)' })
-    updateUser(@Param('id') id: string, @Body() updates: UpdateUserDto) {
-        return this.usersService.updateUser(id, updates);
+    updateUser(@Param('id') id: string, @Body() updates: any) {
+        // Sanitize: strip any fields that are not in the User entity to prevent TypeORM errors
+        const { oldPassword, newPassword, confirmPassword, password, ...safeUpdates } = updates;
+        return this.usersService.updateUser(id, safeUpdates);
     }
 
     @Delete(':id')
