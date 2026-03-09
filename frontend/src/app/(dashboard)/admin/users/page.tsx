@@ -301,7 +301,12 @@ export default function AdminUsersPage() {
                                                     <div className="flex items-center gap-1.5 px-1">
                                                         <span className="flex h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse"></span>
                                                         <span className="text-[9px] font-black text-slate-400 uppercase tracking-tighter">
-                                                            Current: {String(user.role).toLowerCase() === 'customer' ? 'Sender' : 'Traveler'} Mode
+                                                            Current: {
+                                                                user.role === 'customer' ? 'Sender' :
+                                                                    user.role === 'traveler' ? 'Traveler' :
+                                                                        user.role === 'hub_manager' ? 'Hub Manager' :
+                                                                            user.role === 'admin' ? 'Admin' : user.role
+                                                            } Mode
                                                         </span>
                                                     </div>
                                                 )}
@@ -419,7 +424,8 @@ function UserCreateModal({ onClose, onSuccess }: { onClose: () => void; onSucces
     const [primaryRole, setPrimaryRole] = useState('customer');
 
     const toggleRole = (r: string) => {
-        setRoles(prev => prev.includes(r) ? prev.filter(x => x !== r) : [...prev, r]);
+        const roleLower = r.toLowerCase();
+        setRoles(prev => prev.includes(roleLower) ? prev.filter(x => x !== roleLower) : [...prev, roleLower]);
     };
 
     const createMutation = useMutation({
@@ -433,14 +439,22 @@ function UserCreateModal({ onClose, onSuccess }: { onClose: () => void; onSucces
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        const finalRoles = roles.length > 0 ? roles : [primaryRole];
+        const primaryLower = primaryRole.toLowerCase();
+        // Ensure primary role is in roles and all are lowercase
+        const finalRoles = Array.from(new Set([
+            ...roles.map(r => r.toLowerCase()),
+            primaryLower
+        ])).filter(Boolean);
+
         const payload = {
             ...formData,
-            role: primaryRole,
+            role: primaryLower,
             roles: finalRoles
         };
         createMutation.mutate(payload);
     };
+
+    const isRoleActive = (r: string) => roles.map(x => x.toLowerCase()).includes(r.toLowerCase());
 
     return (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
@@ -507,44 +521,52 @@ function UserCreateModal({ onClose, onSuccess }: { onClose: () => void; onSucces
                     </div>
 
                     <div className="p-4 bg-slate-50 dark:bg-slate-700/50 rounded-2xl border border-slate-200 dark:border-slate-600 space-y-4">
-                        <label className="block text-sm font-bold text-slate-700 dark:text-slate-300">Account Access Modes</label>
-                        <div className="grid grid-cols-2 gap-3">
-                            <button
-                                type="button"
-                                onClick={() => toggleRole('customer')}
-                                className={cn(
-                                    "flex items-center gap-2 p-3 rounded-xl border-2 transition-all hover:border-slate-300",
-                                    roles.includes('customer') ? "bg-blue-50 border-blue-500 text-blue-700" : "bg-white border-slate-200 text-slate-600"
-                                )}
-                            >
-                                <div className={cn("h-4 w-4 rounded border-2 flex items-center justify-center", roles.includes('customer') ? "bg-blue-600 border-blue-600" : "border-slate-300")}>
-                                    {roles.includes('customer') && <Users className="h-3 w-3 text-white" />}
+                        {primaryRole !== 'hub_manager' && (
+                            <>
+                                <label className="block text-sm font-bold text-slate-700 dark:text-slate-300">Account Access Modes</label>
+                                <div className="grid grid-cols-2 gap-3">
+                                    <button
+                                        type="button"
+                                        onClick={() => toggleRole('customer')}
+                                        className={cn(
+                                            "flex items-center gap-2 p-3 rounded-xl border-2 transition-all hover:border-slate-300 dark:hover:border-slate-600",
+                                            isRoleActive('customer') ? "bg-blue-50 border-blue-500 text-blue-700 dark:bg-blue-900/20" : "bg-white border-slate-200 dark:bg-slate-700 dark:border-slate-600 text-slate-600 dark:text-slate-400"
+                                        )}
+                                    >
+                                        <div className={cn("h-4 w-4 rounded border-2 flex items-center justify-center", isRoleActive('customer') ? "bg-blue-600 border-blue-600" : "border-slate-300 dark:border-slate-600")}>
+                                            {isRoleActive('customer') && <Users className="h-3 w-3 text-white" />}
+                                        </div>
+                                        <span className="text-sm font-bold">Sender</span>
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => toggleRole('traveler')}
+                                        className={cn(
+                                            "flex items-center gap-2 p-3 rounded-xl border-2 transition-all hover:border-slate-300 dark:hover:border-slate-600",
+                                            isRoleActive('traveler') ? "bg-pink-50 border-pink-500 text-pink-700 dark:bg-pink-900/20" : "bg-white border-slate-200 dark:bg-slate-700 dark:border-slate-600 text-slate-600 dark:text-slate-400"
+                                        )}
+                                    >
+                                        <div className={cn("h-4 w-4 rounded border-2 flex items-center justify-center", isRoleActive('traveler') ? "bg-pink-600 border-pink-600" : "border-slate-300 dark:border-slate-600")}>
+                                            {isRoleActive('traveler') && <Users className="h-3 w-3 text-white" />}
+                                        </div>
+                                        <span className="text-sm font-bold">Traveler</span>
+                                    </button>
                                 </div>
-                                <span className="text-sm font-bold">Sender</span>
-                            </button>
-                            <button
-                                type="button"
-                                onClick={() => toggleRole('traveler')}
-                                className={cn(
-                                    "flex items-center gap-2 p-3 rounded-xl border-2 transition-all hover:border-slate-300",
-                                    roles.includes('traveler') ? "bg-pink-50 border-pink-500 text-pink-700" : "bg-white border-slate-200 text-slate-600"
-                                )}
-                            >
-                                <div className={cn("h-4 w-4 rounded border-2 flex items-center justify-center", roles.includes('traveler') ? "bg-pink-600 border-pink-600" : "border-slate-300")}>
-                                    {roles.includes('traveler') && <Users className="h-3 w-3 text-white" />}
-                                </div>
-                                <span className="text-sm font-bold">Traveler</span>
-                            </button>
-                        </div>
+                            </>
+                        )}
 
                         <div>
                             <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Primary Display Role & Admin Access</label>
                             <select
                                 value={primaryRole}
                                 onChange={(e) => {
-                                    setPrimaryRole(e.target.value);
-                                    if (!['admin', 'hub_manager'].includes(e.target.value) && !roles.includes(e.target.value)) {
-                                        setRoles(prev => [...prev, e.target.value]);
+                                    const nextPrimary = e.target.value.toLowerCase();
+                                    setPrimaryRole(nextPrimary);
+
+                                    if (nextPrimary === 'hub_manager') {
+                                        setRoles(['hub_manager']);
+                                    } else if (!roles.includes(nextPrimary)) {
+                                        setRoles(prev => Array.from(new Set([...prev, nextPrimary])));
                                     }
                                 }}
                                 className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none font-medium"
@@ -605,11 +627,49 @@ function UserEditModal({ user, onClose, onSuccess }: { user: User; onClose: () =
         email: user.email,
         phone: user.phone,
     });
-    const [roles, setRoles] = useState<string[]>(Array.isArray(user.roles) ? user.roles : [user.role]);
-    const [primaryRole, setPrimaryRole] = useState(user.role);
+
+    // Initialize roles correctly even if they come as a JSON string from backend
+    // Consistently NORMALIZE to lowercase to avoid UI mismatches
+    const [roles, setRoles] = useState<string[]>(() => {
+        let rawRoles = user.roles;
+        if (typeof rawRoles === 'string') {
+            try { rawRoles = JSON.parse(rawRoles); } catch (e) { rawRoles = []; }
+        }
+
+        // Normalize everything to lowercase
+        const initialRoles = (Array.isArray(rawRoles) ? rawRoles : [user.role])
+            .map(r => String(r || '').toLowerCase())
+            .filter(Boolean);
+
+        const primary = String(user.role || 'customer').toLowerCase();
+
+        // Ensure primary role is in the list
+        if (primary && !initialRoles.includes(primary)) {
+            initialRoles.push(primary);
+        }
+        return Array.from(new Set(initialRoles));
+    });
+
+    const [primaryRole, setPrimaryRole] = useState(String(user.role || 'customer').toLowerCase());
 
     const toggleRole = (r: string) => {
-        setRoles(prev => prev.includes(r) ? prev.filter(x => x !== r) : [...prev, r]);
+        const roleLower = r.toLowerCase();
+        setRoles(prev => {
+            const isRemoving = prev.includes(roleLower);
+            const newList = isRemoving ? prev.filter(x => x !== roleLower) : [...prev, roleLower];
+
+            // If we are removing the CURRENT primary role, we need to pick a new one
+            if (isRemoving && roleLower === primaryRole) {
+                // Pick the first available role from the NEW list, or default to 'customer'
+                // BUT we should avoid automatically switching to 'admin' or 'hub_manager' 
+                // if they are not intended to be 'modes'. 
+                // Actually, if they are in the newList, they are valid.
+                const nextPrimary = newList.find(role => role !== roleLower) || 'customer';
+                setPrimaryRole(nextPrimary);
+            }
+
+            return newList;
+        });
     };
 
     const updateMutation = useMutation({
@@ -623,14 +683,23 @@ function UserEditModal({ user, onClose, onSuccess }: { user: User; onClose: () =
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        const finalRoles = roles.length > 0 ? roles : [primaryRole];
+
+        // Ensure primary role and all currently selected modes are in the final array
+        const primaryLower = primaryRole.toLowerCase();
+        const finalRoles = Array.from(new Set([
+            ...roles.map(r => r.toLowerCase()),
+            primaryLower
+        ])).filter(Boolean);
+
         const payload = {
             ...formData,
-            role: primaryRole,
+            role: primaryLower,
             roles: finalRoles
         };
         updateMutation.mutate(payload);
     };
+
+    const isRoleActive = (r: string) => roles.includes(r.toLowerCase());
 
     return (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
@@ -676,49 +745,60 @@ function UserEditModal({ user, onClose, onSuccess }: { user: User; onClose: () =
                         />
                     </div>
 
+                    {/* Only show Account Access Modes for non-Hub Manager / non-Admin roles if desired, 
+                        or specifically hide for Hub Manager per user request */}
                     <div className="p-4 bg-slate-50 dark:bg-slate-700/50 rounded-2xl border border-slate-200 dark:border-slate-600 space-y-4">
-                        <label className="block text-sm font-bold text-slate-700 dark:text-slate-300">Account Access Modes</label>
-                        <div className="grid grid-cols-2 gap-3">
-                            <button
-                                type="button"
-                                onClick={() => toggleRole('customer')}
-                                className={cn(
-                                    "flex items-center gap-2 p-3 rounded-xl border-2 transition-all hover:border-slate-300 dark:hover:border-slate-600",
-                                    roles.includes('customer')
-                                        ? "bg-blue-50 border-blue-500 text-blue-700 dark:bg-blue-900/20 dark:border-blue-500 dark:text-blue-400"
-                                        : "bg-white border-slate-200 text-slate-600 dark:bg-slate-700 dark:border-slate-600 dark:text-slate-400"
-                                )}
-                            >
-                                <div className={cn("h-4 w-4 rounded border-2 flex items-center justify-center", roles.includes('customer') ? "bg-blue-600 border-blue-600" : "border-slate-300 dark:border-slate-600")}>
-                                    {roles.includes('customer') && <Users className="h-3 w-3 text-white" />}
+                        {primaryRole !== 'hub_manager' && (
+                            <>
+                                <label className="block text-sm font-bold text-slate-700 dark:text-slate-300">Account Access Modes</label>
+                                <div className="grid grid-cols-2 gap-3">
+                                    <button
+                                        type="button"
+                                        onClick={() => toggleRole('customer')}
+                                        className={cn(
+                                            "flex items-center gap-2 p-3 rounded-xl border-2 transition-all hover:border-slate-300 dark:hover:border-slate-600",
+                                            isRoleActive('customer')
+                                                ? "bg-blue-50 border-blue-500 text-blue-700 dark:bg-blue-900/20 dark:border-blue-500 dark:text-blue-400"
+                                                : "bg-white border-slate-200 text-slate-600 dark:bg-slate-700 dark:border-slate-600 dark:text-slate-400"
+                                        )}
+                                    >
+                                        <div className={cn("h-4 w-4 rounded border-2 flex items-center justify-center", isRoleActive('customer') ? "bg-blue-600 border-blue-600" : "border-slate-300 dark:border-slate-600")}>
+                                            {isRoleActive('customer') && <Users className="h-3 w-3 text-white" />}
+                                        </div>
+                                        <span className="text-sm font-bold">Sender</span>
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => toggleRole('traveler')}
+                                        className={cn(
+                                            "flex items-center gap-2 p-3 rounded-xl border-2 transition-all hover:border-slate-300 dark:hover:border-slate-600",
+                                            isRoleActive('traveler')
+                                                ? "bg-pink-50 border-pink-500 text-pink-700 dark:bg-pink-900/20 dark:border-pink-500 dark:text-pink-400"
+                                                : "bg-white border-slate-200 text-slate-600 dark:bg-slate-700 dark:border-slate-600 dark:text-slate-400"
+                                        )}
+                                    >
+                                        <div className={cn("h-4 w-4 rounded border-2 flex items-center justify-center", isRoleActive('traveler') ? "bg-pink-600 border-pink-600" : "border-slate-300 dark:border-slate-600")}>
+                                            {isRoleActive('traveler') && <Users className="h-3 w-3 text-white" />}
+                                        </div>
+                                        <span className="text-sm font-bold">Traveler</span>
+                                    </button>
                                 </div>
-                                <span className="text-sm font-bold">Sender</span>
-                            </button>
-                            <button
-                                type="button"
-                                onClick={() => toggleRole('traveler')}
-                                className={cn(
-                                    "flex items-center gap-2 p-3 rounded-xl border-2 transition-all hover:border-slate-300 dark:hover:border-slate-600",
-                                    roles.includes('traveler')
-                                        ? "bg-pink-50 border-pink-500 text-pink-700 dark:bg-pink-900/20 dark:border-pink-500 dark:text-pink-400"
-                                        : "bg-white border-slate-200 text-slate-600 dark:bg-slate-700 dark:border-slate-600 dark:text-slate-400"
-                                )}
-                            >
-                                <div className={cn("h-4 w-4 rounded border-2 flex items-center justify-center", roles.includes('traveler') ? "bg-pink-600 border-pink-600" : "border-slate-300 dark:border-slate-600")}>
-                                    {roles.includes('traveler') && <Users className="h-3 w-3 text-white" />}
-                                </div>
-                                <span className="text-sm font-bold">Traveler</span>
-                            </button>
-                        </div>
+                            </>
+                        )}
 
                         <div>
                             <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Primary Display Role & Admin Access</label>
                             <select
                                 value={primaryRole}
                                 onChange={(e) => {
-                                    setPrimaryRole(e.target.value);
-                                    if (!['admin', 'hub_manager'].includes(e.target.value) && !roles.includes(e.target.value)) {
-                                        setRoles(prev => Array.from(new Set([...prev, e.target.value])));
+                                    const nextPrimary = e.target.value.toLowerCase();
+                                    setPrimaryRole(nextPrimary);
+
+                                    if (nextPrimary === 'hub_manager') {
+                                        // Hub Manager should not have Sender/Traveler modes per user request
+                                        setRoles(['hub_manager']);
+                                    } else if (!roles.includes(nextPrimary)) {
+                                        setRoles(prev => Array.from(new Set([...prev, nextPrimary])));
                                     }
                                 }}
                                 className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none font-medium"

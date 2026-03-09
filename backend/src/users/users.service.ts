@@ -18,9 +18,15 @@ export class UsersService {
             select: ['id', 'email', 'password', 'name', 'role', 'roles', 'phone', 'hubId', 'createdAt'],
         });
         if (!user) return null;
+
+        let rolesArray = user.roles;
+        if (typeof rolesArray === 'string') {
+            try { rolesArray = JSON.parse(rolesArray); } catch (e) { rolesArray = []; }
+        }
+
         return {
             ...user,
-            roles: user.roles && user.roles.length > 0 ? user.roles : [user.role],
+            roles: Array.isArray(rolesArray) && rolesArray.length > 0 ? rolesArray : [user.role],
         } as User;
     }
 
@@ -36,9 +42,15 @@ export class UsersService {
             select: ['id', 'email', 'name', 'role', 'roles', 'phone', 'hubId', 'createdAt'],
         });
         if (!user) throw new NotFoundException(`User with ID ${id} not found`);
+
+        let rolesArray = user.roles;
+        if (typeof rolesArray === 'string') {
+            try { rolesArray = JSON.parse(rolesArray); } catch (e) { rolesArray = []; }
+        }
+
         return {
             ...user,
-            roles: user.roles && user.roles.length > 0 ? user.roles : [user.role],
+            roles: Array.isArray(rolesArray) && rolesArray.length > 0 ? rolesArray : [user.role],
         } as User;
     }
 
@@ -153,7 +165,32 @@ export class UsersService {
             delete updates.password;
         }
 
-        await this.usersRepository.update(id, updates);
+        // Ensure roles array is consistent with primary role
+        const user = await this.usersRepository.findOne({ where: { id } });
+        if (!user) throw new NotFoundException('User not found');
+
+        const primaryRole = updates.role || user.role;
+        let rolesArray = updates.roles || user.roles;
+
+        if (typeof rolesArray === 'string') {
+            try { rolesArray = JSON.parse(rolesArray); } catch (e) { rolesArray = []; }
+        }
+
+        rolesArray = Array.isArray(rolesArray) ? rolesArray : [primaryRole];
+
+        // Make sure the primary role is always in the array
+        if (!rolesArray.includes(primaryRole)) {
+            rolesArray.push(primaryRole);
+        }
+
+        // If updates.roles was provided but primaryRole was NOT, 
+        // and current primaryRole is NOT in the new roles array,
+        // we should pick the first one from the new roles array as primary
+        if (updates.roles && !updates.role && !rolesArray.includes(user.role)) {
+            updates.role = rolesArray[0];
+        }
+
+        await this.usersRepository.update(id, { ...updates, roles: rolesArray });
         return this.findById(id);
     }
 
@@ -184,14 +221,23 @@ export class UsersService {
 
     async switchActiveRole(userId: string, targetRole: string): Promise<User> {
         const user = await this.findById(userId);
-        if (!user) throw new NotFoundException('User not found');
-
-        const currentRoles: string[] = Array.isArray(user.roles) ? user.roles : [user.role];
-        if (!currentRoles.includes(targetRole)) {
-            throw new BadRequestException(`Role '${targetRole}' not enabled for this user`);
+        if (!user) {
+            throw new NotFoundException('User not found');
         }
 
-        await this.usersRepository.update(userId, { role: targetRole });
+        // findById already normalizes roles to an array
+        const currentRoles: string[] = Array.isArray(user.roles) ? user.roles : [user.role];
+
+        // Normalize comparison
+        const target = String(targetRole || '').toLowerCase();
+        const hasRole = currentRoles.some(r => String(r).toLowerCase() === target);
+
+        if (!hasRole) {
+            throw new BadRequestException(`Role '${targetRole}' not enabled for this user. Available: ${currentRoles.join(', ')}`);
+        }
+
+        await this.usersRepository.update(userId, { role: target });
+
         return this.findById(userId) as Promise<User>;
     }
 

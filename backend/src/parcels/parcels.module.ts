@@ -11,6 +11,7 @@ import { RoutePlanningModule } from '../route-planning/route-planning.module';
 import { TravelPlansModule } from '../travel-plans/travel-plans.module';
 import { UsersModule } from '../users/users.module';
 import { TrackingModule } from '../tracking/tracking.module';
+import { NotificationsModule } from '../common/notifications.module';
 
 @Module({
     imports: [
@@ -19,6 +20,7 @@ import { TrackingModule } from '../tracking/tracking.module';
         TravelPlansModule,
         TrackingModule,
         UsersModule,
+        NotificationsModule,
     ],
     controllers: [ParcelsController],
     providers: [ParcelsService, MatchingService, ParcelExpiryScheduler],

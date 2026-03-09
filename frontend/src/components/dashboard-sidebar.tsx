@@ -199,32 +199,47 @@ export default function DashboardSidebar() {
         : (typeof rawRoles === 'string' ? JSON.parse(rawRoles) : [user?.role]);
 
     // Ensure all roles are strings and trimmed
-    const normalizedRoles = userRoles.map(r => String(r).trim().toLowerCase());
+    const normalizedRoles = Array.from(new Set(
+        userRoles.map(r => String(r).trim().toLowerCase()).filter(Boolean)
+    ));
 
     // Also check token roles as a final fallback
-    const finalRoles = normalizedRoles.length > 0 ? normalizedRoles : getTokenRoles();
+    const finalRoles = normalizedRoles.length > 0 ? normalizedRoles : Array.from(new Set(getTokenRoles().map(r => r.toLowerCase())));
 
-    const isDualRole = finalRoles.includes('customer') && finalRoles.includes('traveler');
+    const hasMultipleRoles = finalRoles.length > 1;
 
-    // DEBUG: Log the roles for diagnosis
-    useEffect(() => {
-        if (user) {
-            console.log(`[Sidebar Debug] User: ${user.name}, Active: ${user.role}, Roles:`, finalRoles);
-            console.log(`[Sidebar Debug] isDualRole:`, isDualRole);
+    // Filter out the CURRENT role to find other available roles
+    const currentRoleLower = String(user?.role || '').toLowerCase();
+    const otherRoles = finalRoles.filter(r => r !== currentRoleLower);
+
+    // For switching, we pick the first "other" role. 
+    // In a more complex setup, this could be a dropdown, 
+    // but for 2-3 roles, simple cycling is often fine.
+    const nextRole = otherRoles[0];
+
+    const getRoleLabel = (r: string) => {
+        switch (r) {
+            case 'customer': return 'Sender';
+            case 'traveler': return 'Traveler';
+            case 'hub_manager': return 'Hub Manager';
+            case 'admin': return 'Admin';
+            default: return r.charAt(0).toUpperCase() + r.slice(1);
         }
-    }, [user, finalRoles, isDualRole]);
+    };
 
-    const targetRole = user?.role === 'customer' ? 'traveler' : 'customer';
-    const targetLabel = user?.role === 'customer' ? 'Switch to Traveler Dashboard' : 'Switch to Sender Dashboard';
-    const targetPath = user?.role === 'customer' ? '/traveler' : '/customer';
+    const targetLabel = nextRole ? `Switch to ${getRoleLabel(nextRole)} Dashboard` : '';
+    const targetPath = nextRole === 'customer' ? '/customer' :
+        nextRole === 'traveler' ? '/traveler' :
+            nextRole === 'hub_manager' ? '/hub' :
+                nextRole === 'admin' ? '/admin' : '/';
 
     const handleSwitchRole = async () => {
-        if (switching) return;
+        if (!nextRole || switching) return;
         setSwitching(true);
         try {
-            const { data } = await api.post('/users/switch-role', { role: targetRole });
+            const { data } = await api.post('/users/switch-role', { role: nextRole });
             updateAuth(data.user, data.access_token);
-            toast.success(`Switched to ${targetRole === 'customer' ? 'Customer (Sender)' : 'Traveler'} mode`);
+            toast.success(`Switched to ${getRoleLabel(nextRole)} mode`);
             router.replace(targetPath);
         } catch (err: any) {
             toast.error(err.response?.data?.message || 'Failed to switch role');
@@ -292,20 +307,18 @@ export default function DashboardSidebar() {
                     })}
                 </nav>
 
-                {/* Theme Toggle & User Info */}
                 <div className="mt-auto space-y-3 pt-4 border-t border-slate-100 dark:border-slate-800">
                     <div className="flex items-center justify-between gap-2 px-2">
                         <ThemeToggle className="hidden lg:flex" />
                         <div className="flex-1 flex items-center gap-3 px-4 py-2 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800/50">
                             <div className="min-w-0">
                                 <p className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">Active Role</p>
-                                <p className="text-xs font-bold text-blue-600 dark:text-blue-400 truncate">{user?.role?.replace('_', ' ')}</p>
+                                <p className="text-xs font-bold text-blue-600 dark:text-blue-400 truncate">{getRoleLabel(user?.role || '')}</p>
                             </div>
                         </div>
                     </div>
 
-                    {/* Dual-role switcher */}
-                    {isDualRole && (
+                    {hasMultipleRoles && nextRole && (
                         <button
                             onClick={handleSwitchRole}
                             disabled={switching}
