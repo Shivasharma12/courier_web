@@ -78,22 +78,25 @@ export class UsersService {
     }
 
     async updateProfile(id: string, updates: Partial<User>): Promise<User | null> {
+        console.log(`DEBUG: updateProfile for ${id}. Raw:`, JSON.stringify(updates));
+
+        // Prevent password and role updates from here
+        const sanitized = this.sanitizeUpdatePayload(updates);
+        delete sanitized.role;
+        delete sanitized.roles;
+        delete sanitized.password;
+
         // If email is being updated, check for collision
-        if (updates.email) {
-            const existing = await this.findByEmail(updates.email);
+        if (sanitized.email) {
+            const existing = await this.findByEmail(sanitized.email);
             if (existing && existing.id !== id) {
                 throw new ConflictException('Email already exists');
             }
         }
 
-        // Prevent password and role updates from here
-        delete (updates as any).role;
-        delete (updates as any).password;
-        delete (updates as any).oldPassword;
-        delete (updates as any).newPassword;
-        delete (updates as any).confirmPassword;
-
-        await this.usersRepository.update(id, updates);
+        if (Object.keys(sanitized).length > 0) {
+            await this.usersRepository.update(id, sanitized);
+        }
         return this.findById(id);
     }
 
@@ -131,26 +134,27 @@ export class UsersService {
     }
 
     async updateUser(id: string, updates: Partial<User>): Promise<User | null> {
+        console.log(`DEBUG: updateUser for ${id}. Raw payload:`, JSON.stringify(updates));
+
+        const sanitized = this.sanitizeUpdatePayload(updates);
+
         // If email is being updated, check for collision
-        if (updates.email) {
-            const existing = await this.findByEmail(updates.email);
+        if (sanitized.email) {
+            const existing = await this.findByEmail(sanitized.email);
             if (existing && existing.id !== id) {
                 throw new ConflictException('Email already exists');
             }
         }
 
         // Admin can update any field except password (use separate method)
-        if (updates.password) delete updates.password;
-        if ((updates as any).oldPassword) delete (updates as any).oldPassword;
-        if ((updates as any).newPassword) delete (updates as any).newPassword;
-        if ((updates as any).confirmPassword) delete (updates as any).confirmPassword;
+        delete sanitized.password;
 
         // Ensure roles array is consistent with primary role
         const user = await this.usersRepository.findOne({ where: { id } });
         if (!user) throw new NotFoundException('User not found');
 
-        const primaryRole = updates.role || user.role;
-        let rolesArray = updates.roles || user.roles;
+        const primaryRole = sanitized.role || user.role;
+        let rolesArray = sanitized.roles || user.roles;
 
         if (typeof rolesArray === 'string') {
             try { rolesArray = JSON.parse(rolesArray); } catch (e) { rolesArray = []; }
@@ -163,14 +167,15 @@ export class UsersService {
             rolesArray.push(primaryRole);
         }
 
-        // If updates.roles was provided but primaryRole was NOT, 
-        // and current primaryRole is NOT in the new roles array,
-        // we should pick the first one from the new roles array as primary
-        if (updates.roles && !updates.role && !rolesArray.includes(user.role)) {
-            updates.role = rolesArray[0];
-        }
+        // Final payload construction
+        const finalUpdate = {
+            ...sanitized,
+            roles: rolesArray
+        };
 
-        await this.usersRepository.update(id, { ...updates, roles: rolesArray });
+        if (Object.keys(finalUpdate).length > 0) {
+            await this.usersRepository.update(id, finalUpdate);
+        }
         return this.findById(id);
     }
 
@@ -233,6 +238,20 @@ export class UsersService {
 
         const hashed = await bcrypt.hash(newPass, 10);
         await this.usersRepository.update(userId, { password: hashed });
+    }
+
+    private sanitizeUpdatePayload(updates: any): Partial<User> {
+        const allowedFields = [
+            'name', 'email', 'phone', 'role', 'roles', 'hubId',
+            'travelStartLat', 'travelStartLng', 'travelEndLat', 'travelEndLng', 'vehicleType'
+        ];
+        const sanitized: any = {};
+        for (const field of allowedFields) {
+            if (updates[field] !== undefined) {
+                sanitized[field] = updates[field];
+            }
+        }
+        return sanitized;
     }
 
     private normalizeUserRoles(user: User): User {

@@ -11,7 +11,7 @@ import { Public } from '../common/decorators/public.decorator';
 import { Role } from '../common/enums/role.enum';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { UsersService } from '../users/users.service';
-import { NotificationsService } from '../common/notifications.service';
+import { NotificationsService } from '../notifications/notifications.service';
 
 @ApiTags('hubs')
 @ApiBearerAuth()

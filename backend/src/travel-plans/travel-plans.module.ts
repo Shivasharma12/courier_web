@@ -7,7 +7,7 @@ import { TravelPlan } from './entities/travel-plan.entity';
 import { Parcel } from '../parcels/entities/parcel.entity';
 
 import { TrackingModule } from '../tracking/tracking.module';
-import { NotificationsModule } from '../common/notifications.module';
+import { NotificationsModule } from '../notifications/notifications.module';
 
 @Module({
   imports: [

@@ -5,7 +5,7 @@ import { Parcel } from '../parcels/entities/parcel.entity';
 import { TravelPlan } from '../travel-plans/entities/travel-plan.entity';
 import { ParcelStatus } from '../common/enums/parcel-status.enum';
 import { TravelPlanStatus } from '../common/enums/travel-plan-status.enum';
-import { NotificationsService } from '../common/notifications.service';
+import { NotificationsService } from '../notifications/notifications.service';
 import { TrackingService } from '../tracking/tracking.service';
 
 export interface MatchedParcel {

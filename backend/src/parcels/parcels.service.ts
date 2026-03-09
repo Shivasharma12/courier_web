@@ -6,7 +6,7 @@ import { ParcelLeg } from './entities/parcel-leg.entity';
 import { ParcelStatus } from '../common/enums/parcel-status.enum';
 import { User } from '../users/entities/user.entity';
 import { TravelMatchingService } from '../travel-plans/travel-matching.service';
-import { NotificationsService } from '../common/notifications.service';
+import { NotificationsService } from '../notifications/notifications.service';
 import { TrackingService } from '../tracking/tracking.service';
 
 @Injectable()

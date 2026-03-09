@@ -4,7 +4,7 @@ import { Repository, MoreThan } from 'typeorm';
 import { TravelPlan } from './entities/travel-plan.entity';
 import { TravelPlanStatus } from '../common/enums/travel-plan-status.enum';
 import { TravelMatchingService } from './travel-matching.service';
-import { NotificationsService } from '../common/notifications.service';
+import { NotificationsService } from '../notifications/notifications.service';
 import { Parcel } from '../parcels/entities/parcel.entity';
 
 @Injectable()

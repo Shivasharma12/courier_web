@@ -5,7 +5,7 @@ import { HubUpdate } from './entities/hub-update.entity';
 import { HubsService } from './hubs.service';
 import { HubsController } from './hubs.controller';
 import { UsersModule } from '../users/users.module';
-import { NotificationsModule } from '../common/notifications.module';
+import { NotificationsModule } from '../notifications/notifications.module';
 
 @Module({
     imports: [

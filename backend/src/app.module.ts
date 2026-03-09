@@ -25,15 +25,13 @@ import { TransportModesModule } from './transport-modes/transport-modes.module';
 import { RouteSegmentsModule } from './route-segments/route-segments.module';
 import { RoutePlanningModule } from './route-planning/route-planning.module';
 import { TravelPlansModule } from './travel-plans/travel-plans.module';
-import { NotificationsModule } from './common/notifications.module';
-import { GeocodingModule } from './common/geocoding.module';
+import { NotificationsModule } from './notifications/notifications.module';
+import { GeocodingModule } from './geocoding/geocoding.module';
 import { HandoversModule } from './handovers/handovers.module';
 import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
-    NotificationsModule,
-    GeocodingModule,
     ConfigModule.forRoot({
       isGlobal: true,
     }),
@@ -57,6 +55,8 @@ import { ScheduleModule } from '@nestjs/schedule';
       },
     }),
     ScheduleModule.forRoot(),
+    NotificationsModule,
+    GeocodingModule,
     AuthModule,
     UsersModule,
     HubsModule,
