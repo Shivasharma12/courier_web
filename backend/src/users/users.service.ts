@@ -104,9 +104,12 @@ export class UsersService {
             }
         }
 
-        // Prevent role matching from here
+        // Prevent password and role updates from here
         delete (updates as any).role;
         delete (updates as any).password;
+        delete (updates as any).oldPassword;
+        delete (updates as any).newPassword;
+        delete (updates as any).confirmPassword;
 
         await this.usersRepository.update(id, updates);
         return this.findById(id);
@@ -161,9 +164,10 @@ export class UsersService {
         }
 
         // Admin can update any field except password (use separate method)
-        if (updates.password) {
-            delete updates.password;
-        }
+        if (updates.password) delete updates.password;
+        if ((updates as any).oldPassword) delete (updates as any).oldPassword;
+        if ((updates as any).newPassword) delete (updates as any).newPassword;
+        if ((updates as any).confirmPassword) delete (updates as any).confirmPassword;
 
         // Ensure roles array is consistent with primary role
         const user = await this.usersRepository.findOne({ where: { id } });
