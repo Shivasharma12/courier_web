@@ -39,10 +39,18 @@ function NotificationBell({ userId, onNavigate }: { userId: string; onNavigate: 
     const { data: notifs = [] } = useQuery<any[]>({
         queryKey: ['notifications', userId],
         queryFn: async () => {
-            const { data } = await api.get('/notifications');
-            return data;
+            try {
+                const { data } = await api.get('/notifications');
+                return Array.isArray(data) ? data : [];
+            } catch (err: any) {
+                // If server returns 404 (route not deployed yet) or any error, return empty
+                if (err?.response?.status === 404) return [];
+                throw err;
+            }
         },
-        refetchInterval: 30_000, // poll every 30s
+        retry: false,
+        refetchInterval: 60_000, // poll every 60s (not 30s to reduce noise)
+        staleTime: 30_000,
     });
 
     const markAllRead = useMutation({
