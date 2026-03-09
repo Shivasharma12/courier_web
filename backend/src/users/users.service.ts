@@ -18,16 +18,7 @@ export class UsersService {
             select: ['id', 'email', 'password', 'name', 'role', 'roles', 'phone', 'hubId', 'createdAt'],
         });
         if (!user) return null;
-
-        let rolesArray = user.roles;
-        if (typeof rolesArray === 'string') {
-            try { rolesArray = JSON.parse(rolesArray); } catch (e) { rolesArray = []; }
-        }
-
-        return {
-            ...user,
-            roles: Array.isArray(rolesArray) && rolesArray.length > 0 ? rolesArray : [user.role],
-        } as User;
+        return this.normalizeUserRoles(user);
     }
 
     // For full profile (all columns including roles array)
@@ -42,16 +33,7 @@ export class UsersService {
             select: ['id', 'email', 'name', 'role', 'roles', 'phone', 'hubId', 'createdAt'],
         });
         if (!user) throw new NotFoundException(`User with ID ${id} not found`);
-
-        let rolesArray = user.roles;
-        if (typeof rolesArray === 'string') {
-            try { rolesArray = JSON.parse(rolesArray); } catch (e) { rolesArray = []; }
-        }
-
-        return {
-            ...user,
-            roles: Array.isArray(rolesArray) && rolesArray.length > 0 ? rolesArray : [user.role],
-        } as User;
+        return this.normalizeUserRoles(user);
     }
 
     async findByHubId(hubId: string): Promise<User | null> {
@@ -92,7 +74,7 @@ export class UsersService {
             roles: rolesArray,
         });
 
-        return this.usersRepository.save(user);
+        return this.normalizeUserRoles(await this.usersRepository.save(user));
     }
 
     async updateProfile(id: string, updates: Partial<User>): Promise<User | null> {
@@ -120,10 +102,7 @@ export class UsersService {
             relations: ['hub']
         });
 
-        return users.map(u => ({
-            ...u,
-            roles: u.roles && u.roles.length > 0 ? u.roles : [u.role],
-        })) as User[];
+        return users.map(u => this.normalizeUserRoles(u));
     }
 
     async findByRole(role: string): Promise<User[]> {
@@ -131,10 +110,7 @@ export class UsersService {
             where: { role },
             relations: ['hub']
         });
-        return users.map(u => ({
-            ...u,
-            roles: Array.isArray(u.roles) && u.roles.length > 0 ? u.roles : [u.role]
-        })) as User[];
+        return users.map(u => this.normalizeUserRoles(u));
     }
 
     async getUserStats() {
@@ -219,7 +195,7 @@ export class UsersService {
             currentRoles.push(otherRole);
         }
 
-        await this.usersRepository.update(userId, { roles: currentRoles });
+        await this.usersRepository.update(userId, { roles: Array.from(new Set(currentRoles)) });
         return this.findById(userId) as Promise<User>;
     }
 
@@ -257,5 +233,30 @@ export class UsersService {
 
         const hashed = await bcrypt.hash(newPass, 10);
         await this.usersRepository.update(userId, { password: hashed });
+    }
+
+    private normalizeUserRoles(user: User): User {
+        if (!user) return user;
+        let rolesArray = user.roles;
+        if (typeof rolesArray === 'string') {
+            try {
+                rolesArray = JSON.parse(rolesArray);
+            } catch (e) {
+                rolesArray = [];
+            }
+        }
+
+        const finalRoles = Array.isArray(rolesArray)
+            ? rolesArray.map(r => String(r)).filter(Boolean)
+            : [];
+
+        if (finalRoles.length === 0 && user.role) {
+            finalRoles.push(user.role);
+        }
+
+        return {
+            ...user,
+            roles: Array.from(new Set(finalRoles)),
+        } as User;
     }
 }

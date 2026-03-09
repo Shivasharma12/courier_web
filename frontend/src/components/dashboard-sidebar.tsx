@@ -192,15 +192,24 @@ export default function DashboardSidebar() {
             return [];
         } catch { return []; }
     };
-    // Hardened role detection
+    // Hardened role detection for live platform
     const rawRoles = user?.roles || [];
-    const userRoles: string[] = Array.isArray(rawRoles)
-        ? rawRoles
-        : (typeof rawRoles === 'string' ? JSON.parse(rawRoles) : [user?.role]);
+    let parsedRoles: string[] = [];
 
-    // Ensure all roles are strings and trimmed
+    if (Array.isArray(rawRoles)) {
+        parsedRoles = rawRoles.map(r => String(r));
+    } else if (typeof rawRoles === 'string') {
+        try {
+            const parsed = JSON.parse(rawRoles);
+            parsedRoles = Array.isArray(parsed) ? parsed.map(r => String(r)) : [rawRoles];
+        } catch {
+            parsedRoles = rawRoles ? [rawRoles] : [];
+        }
+    }
+
+    // Ensure all roles are strings and trimmed, always include current role
     const normalizedRoles = Array.from(new Set(
-        userRoles.map(r => String(r).trim().toLowerCase()).filter(Boolean)
+        [...parsedRoles, user?.role].map(r => String(r || '').trim().toLowerCase()).filter(Boolean)
     ));
 
     // Also check token roles as a final fallback

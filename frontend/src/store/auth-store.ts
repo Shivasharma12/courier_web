@@ -31,15 +31,27 @@ export const useAuthStore = create<AuthState>()(
             setHasHydrated: (state) => set({ _hasHydrated: state }),
             setAuth: (user, token) => {
                 console.log('DEBUG: AuthStore setAuth received user:', JSON.stringify(user));
-                const roles = Array.isArray(user.roles) ? user.roles : (user.role ? [user.role] : []);
+                let roles = user.roles;
+                if (typeof roles === 'string') {
+                    try { roles = JSON.parse(roles); } catch (e) { roles = []; }
+                }
+                const finalRoles = Array.isArray(roles) ? roles : (user.role ? [user.role] : []);
+                const uniqueRoles = Array.from(new Set(finalRoles.map(r => String(r).trim().toLowerCase()).filter(Boolean)));
+
                 localStorage.setItem('token', token);
-                set({ user: { ...user, roles }, token });
+                set({ user: { ...user, roles: uniqueRoles }, token });
             },
             updateAuth: (user, token) => {
                 console.log('DEBUG: AuthStore updateAuth received user:', JSON.stringify(user));
-                const roles = Array.isArray(user.roles) ? user.roles : (user.role ? [user.role] : []);
+                let roles = user.roles;
+                if (typeof roles === 'string') {
+                    try { roles = JSON.parse(roles); } catch (e) { roles = []; }
+                }
+                const finalRoles = Array.isArray(roles) ? roles : (user.role ? [user.role] : []);
+                const uniqueRoles = Array.from(new Set(finalRoles.map(r => String(r).trim().toLowerCase()).filter(Boolean)));
+
                 localStorage.setItem('token', token);
-                set({ user: { ...user, roles }, token });
+                set({ user: { ...user, roles: uniqueRoles }, token });
             },
             patchUser: (updates) => {
                 set((state) => ({
